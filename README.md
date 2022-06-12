@@ -1,7 +1,17 @@
 # E-NAS
-Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
+Experiments about an diffrent approach to Neural Architecture Search (NAS).
 
 TODO: 
-* Add generall information about NAS, diffrent approaches and so on
+* Add generall information about NAS, diffrent approaches and so on (in context of hyperscalar optimization and automation ML)
 * Add "classic" NAS algorithms implementation + experiments (jupyter notebooks) diveded by class of algorithms
 * Add proper cons and pros to each 
+* Add assumptions
+* Add ideas?
+
+Założenia:
+    1. ML to przeksztalcenia geometryczne z przestrzeni A do B
+    2. ML korzysta z przestrzeni hipotez/możliwości (zdefiniowany zbiór operacji)
+        2.1 Topologia sieci definiuje przestrzen hipotez
+        2.2 Od parametrów topologi sieci (np. ilosc neuronow) zalezy wydajnosc/sprawnosc(?) sieci
+    3. Hiperparametry można zoptymalizować (jest to przestrzeń ciągła(?))
+    4. Co optymalizujemy? Błąd walidacji czy coś jeszcze?

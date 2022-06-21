@@ -14,7 +14,7 @@ Założenia:
         2.1 Topologia sieci definiuje przestrzen hipotez
         2.2 Od parametrów topologi sieci (np. ilosc neuronow) zalezy wydajnosc/sprawnosc(?) sieci
     3. Hiperparametry można zoptymalizować (jest to przestrzeń ciągła(?))
-    4. Pod co optymalizujemy? Błąd walidacji czy coś jeszcze?
+    4. Pod co optymalizujemy? Błąd walidacji czy coś jeszcze? Dokładność?
         4.1 Czy można zrobić NAS bez trenowania sieci?
 
 Wady i zalety algorytmów:

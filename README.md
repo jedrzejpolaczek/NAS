@@ -24,7 +24,6 @@ Założenia:
 
 Wady i zalety algorytmów:
     EA:
-<<<<<<< HEAD
         Ogólnie:
             Założenie:
                 
@@ -49,13 +48,6 @@ Wady i zalety algorytmów:
     RL:
         Założenie:
             
-=======
-        Wady:
-            1. 
-        Zalety:
-            1. 
-    RL:
->>>>>>> e11fcc3548d7c7fa55d9b226930ac4c07ad20cb0
         Wady:
             1. 
         Zalety:

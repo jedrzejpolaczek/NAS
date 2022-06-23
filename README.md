@@ -1,4 +1,9 @@
 # E-NAS
+<<<<<<< HEAD
+Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
+# E-NAS
+=======
+>>>>>>> e11fcc3548d7c7fa55d9b226930ac4c07ad20cb0
 Experiments about an diffrent approach to Neural Architecture Search (NAS).
 
 TODO: 
@@ -19,11 +24,38 @@ Założenia:
 
 Wady i zalety algorytmów:
     EA:
+<<<<<<< HEAD
+        Ogólnie:
+            Założenie:
+                
+            Wady:
+                1. 
+            Zalety:
+                1. 
+        NSGA-II
+            Założenie:
+
+            Wady:
+                1. 
+            Zalety:
+                1.             
+        NSGA-Net:
+            Założenie:
+                
+            Wady:
+                1. 
+            Zalety:
+                1. 
+    RL:
+        Założenie:
+            
+=======
         Wady:
             1. 
         Zalety:
             1. 
     RL:
+>>>>>>> e11fcc3548d7c7fa55d9b226930ac4c07ad20cb0
         Wady:
             1. 
         Zalety:
@@ -36,3 +68,7 @@ Problemy:
         1.
     RL:
         1.
+
+Wykorzystanie w biznesie:
+    1. RAPIDS on AWS Sagemaker
+    2. Vertex AI NAS - https://cloud.google.com/blog/products/ai-machine-learning/vertex-ai-nas-makes-the-most--advanced-ml-modeling-possible

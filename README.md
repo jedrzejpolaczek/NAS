@@ -1,9 +1,6 @@
 # E-NAS
-<<<<<<< HEAD
 Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
 # E-NAS
-=======
->>>>>>> e11fcc3548d7c7fa55d9b226930ac4c07ad20cb0
 Experiments about an diffrent approach to Neural Architecture Search (NAS).
 
 TODO: 

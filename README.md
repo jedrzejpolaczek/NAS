@@ -25,6 +25,13 @@ Wady i zalety algorytmów:
             Założenie:
                 
             Wady:
+                1. Potrzebuje wykonać dużo obliczeń -> jest wolny
+            Zalety:
+                1. Dobrze się sprawdza w przeszukiwaniu przestrzeni rozwiązań
+        NSGA
+            Założenie:
+
+            Wady:
                 1. 
             Zalety:
                 1. 
@@ -46,9 +53,9 @@ Wady i zalety algorytmów:
         Założenie:
             
         Wady:
-            1. 
+            1. łatwo wpada w lokalne optimum
         Zalety:
-            1. 
+            1. szybko znajduje lokalne optimum "reagując" na to co się dzieje
 
 Problemy:
     Ogólnie:

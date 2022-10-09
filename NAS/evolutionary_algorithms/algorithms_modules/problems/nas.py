@@ -2,8 +2,13 @@ import numpy as np
 from loguru import logger
 from pymop.problem import Problem
 
+# Local import
+from algorithms_modules.data_encoding import micro_encoding
+from algorithms_modules.data_encoding import macro_encoding
+from algorithms_modules.exploitation.boa import train_search
 
-# TODO: rewrite it
+
+# TODO: rewrite it, add typing and proper docstring
 class NAS(Problem):
     # first define the NAS problem (inherit from pymop)
     def __init__(self, search_space='micro', n_var=20, n_obj=1, n_constr=0, lb=None, ub=None,

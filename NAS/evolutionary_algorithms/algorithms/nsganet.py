@@ -4,9 +4,9 @@
 import numpy as np
 
 from pymoo.algorithms.genetic_algorithm import GeneticAlgorithm
+from pymoo.model.survival import Survival
 from pymoo.docs import parse_doc_string
 from pymoo.model.individual import Individual
-from pymoo.model.survival import Survival
 from pymoo.operators.crossover.point_crossover import PointCrossover
 from pymoo.operators.mutation.polynomial_mutation import PolynomialMutation
 from pymoo.operators.sampling.random_sampling import RandomSampling
@@ -39,13 +39,16 @@ class NSGANet(GeneticAlgorithm):
 
 
 def binary_tournament(pop, P, algorithm, **kwargs):
-    if P.shape[1] != 2:
+    # TODO: What is P?
+    n_tournaments, n_parents = P.shape
+
+    if n_parents != 2:
         raise ValueError("Only implemented for binary tournament!")
 
     tournament_type = algorithm.tournament_type
-    S = np.full(P.shape[0], np.nan)
+    S = np.full(n_tournaments, np.nan)  # TODO: What is S?
 
-    for i in range(P.shape[0]):
+    for i in range(n_tournaments):
 
         a, b = P[i, 0], P[i, 1]
 

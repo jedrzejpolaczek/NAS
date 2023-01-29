@@ -9,6 +9,13 @@ Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
 * search strategies - ways to find solution from search space for example genetic algorithms or reinforcement learning.
 * examples - mostly contains jupyter notebooks with examples and explanations how each algorithm works.
 
+
+# Usefull links and influences:
+* https://github.com/gmontamat/gentun
+* https://github.com/anonymone/Neural-Architecture-Search
+* https://github.com/adam-katona/NSGA_2_tutorial
+* https://www.researchgate.net/figure/Flow-chart-of-step-by-step-procedure-of-NSGA-II-algorithm_fig3_261922808
+* https://github.com/ianwhale/nsga-net
 # Notes:
 
 Założenia:

@@ -17,8 +17,8 @@ if __name__ == '__main__':
     import random
 
     from sklearn.preprocessing import LabelBinarizer
-    from search_space.populations import Population
-    from search_space.binary_string_network_representation_with_skip_bit_individual import BinaryStringNetworkRepresentationWithSkipBitIndividual
+    from NAS.search_space.populations import Population
+    from NAS.search_space.binary_network_representation_with_skip_bit_individual import BinaryNetworkRepresentationWithSkipBitIndividual
 
     train_images = mnist.train_images()
     train_labels = mnist.train_labels()
@@ -33,13 +33,13 @@ if __name__ == '__main__':
     population_size = 20
 
     population = Population(
-        BinaryStringNetworkRepresentationWithSkipBitIndividual, x_train, y_train, size=population_size, crossover_rate=0.3, mutation_rate=0.1,
+        BinaryNetworkRepresentationWithSkipBitIndividual, x_train, y_train, size=population_size, crossover_rate=0.3, mutation_rate=0.1,
         additional_parameters={
             'kfold': 5, 'epochs': (20, 4, 1), 'learning_rate': (1e-3, 1e-4, 1e-5), 'batch_size': 32
         }, maximize=True
     )
 
-    assert(population.get_species() == BinaryStringNetworkRepresentationWithSkipBitIndividual)
+    assert(population.get_species() == BinaryNetworkRepresentationWithSkipBitIndividual)
     assert(population.get_size() == population_size)
     assert(population.get_data() == (x_train, y_train))
     assert(population.get_fitness_criteria() == True)

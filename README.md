@@ -5,17 +5,17 @@ Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
 # How to use this repo
 ## File structure
 * models - implementation of models and thier templates to use for search startegies.
-* search space - way of represent search space for example how we can code neural networks layers to be used and modified by search strategies.
+* search space - (encoding) way of represent search space for example how we can code neural networks layers to be used and modified by search strategies. Most of the time implementation of it will be individuals and population for genetic algorithm.
 * search strategies - ways to find solution from search space for example genetic algorithms or reinforcement learning.
 * examples - mostly contains jupyter notebooks with examples and explanations how each algorithm works.
 
 
 # Usefull links and influences:
-* https://github.com/gmontamat/gentun
-* https://github.com/anonymone/Neural-Architecture-Search
-* https://github.com/adam-katona/NSGA_2_tutorial
+* https://github.com/gmontamat/gentun (models implementation and general idea how genetic algorithms should be implemented)
+* https://github.com/anonymone/Neural-Architecture-Search (well structured knowledge about NAS)
+* https://github.com/adam-katona/NSGA_2_tutorial (idea about jupyter notebooks for algorithms and help to understand NSGA2)
 * https://www.researchgate.net/figure/Flow-chart-of-step-by-step-procedure-of-NSGA-II-algorithm_fig3_261922808
-* https://github.com/ianwhale/nsga-net
+* https://github.com/ianwhale/nsga-net (starting point of this work)
 # Notes:
 
 Założenia:

@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     from sklearn.preprocessing import LabelBinarizer
     from NAS.search_space.populations import Population
-    from NAS.search_space.binary_string_network_representation_with_skip_bit_individual import BinaryStringNetworkRepresentationWithSkipBitIndividual
+    from NAS.search_space.binary_network_representation_with_skip_bit_individual import BinaryNetworkRepresentationWithSkipBitIndividual
     from NAS.search_strategies.genetic_algorithms.nsga_net.nsga_net import NSGANet
 
     train_images = mnist.train_images()
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     x_train = x_train / 255  # Normalize train data
 
     population = Population(
-        BinaryStringNetworkRepresentationWithSkipBitIndividual, 
+        BinaryNetworkRepresentationWithSkipBitIndividual, 
         x_train, 
         y_train, 
         size=20, 

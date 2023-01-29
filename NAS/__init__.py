@@ -13,11 +13,11 @@ except ImportError:
 
 # Binary string network representation with skip bit individuals and models
 try:
-    from NAS.search_space.binary_string_network_representation_with_skip_bit_individual import BinaryStringNetworkRepresentationWithSkipBitIndividual
-    from NAS.models.binary_string_network_representation_with_skip_bit_model import BinaryStringNetworkRepresentationWithSkipBitModel
+    from NAS.search_space.binary_network_representation_with_skip_bit_individual import BinaryNetworkRepresentationWithSkipBitIndividual
+    from NAS.models.binary_network_representation_with_skip_bit_model import BinaryNetworkRepresentationWithSkipBitModel
 except ImportError:
     logger.warning("Warning: install search space and models to use \
-        BinaryStringNetworkRepresentationWithSkipBitIndividual and BinaryStringNetworkRepresentationWithSkipBitModel.")
+        BinaryNetworkRepresentationWithSkipBitIndividual and BinaryNetworkRepresentationWithSkipBitModel.")
 
 # Bayesian optimization algorithm
 try:

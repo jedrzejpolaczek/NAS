@@ -15,12 +15,12 @@ except ImportError:
     logger.warning("Warning: install individual to use Individual.")
 
 try:
-    from ..models.binary_string_network_representation_with_skip_bit_model import BinaryStringNetworkRepresentationWithSkipBitModel
+    from ..models.binary_network_representation_with_skip_bit_model import BinaryNetworkRepresentationWithSkipBitModel
 except ImportError:
-    logger.warning("Warning: install models to use BinaryStringNetworkRepresentationWithSkipBitModel.")
+    logger.warning("Warning: install models to use BinaryNetworkRepresentationWithSkipBitModel.")
 
  
-class BinaryStringNetworkRepresentationWithSkipBitIndividual(Individual):
+class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
     """
     Individual of individauls for Neural Network leyars proposed in article:
     NSGA-Net: Neural Architecture Search using Multi-Objective Genetic Algorithm
@@ -103,7 +103,7 @@ class BinaryStringNetworkRepresentationWithSkipBitIndividual(Individual):
             genes = self.generate_random_genes(genome)
 
         # Set individual's attributes
-        super(BinaryStringNetworkRepresentationWithSkipBitIndividual, self).__init__(x_train, y_train, genome, genes, crossover_rate, mutation_rate)
+        super(BinaryNetworkRepresentationWithSkipBitIndividual, self).__init__(x_train, y_train, genome, genes, crossover_rate, mutation_rate)
 
         self.nodes_per_stage = nodes_per_stage
         self.input_shape = input_shape
@@ -189,7 +189,7 @@ class BinaryStringNetworkRepresentationWithSkipBitIndividual(Individual):
 
     def evaluate_fitness(self) -> None:
         """Create model and perform cross-validation."""
-        model = BinaryStringNetworkRepresentationWithSkipBitModel(
+        model = BinaryNetworkRepresentationWithSkipBitModel(
             self.x_train, self.y_train, self.genes, self.nodes_per_stage, self.input_shape, self.kernels_per_layer,
             self.kernel_sizes, self.dense_units, self.dropout_probability, self.classes,
             self.kfold, self.epochs, self.learning_rate, self.batch_size

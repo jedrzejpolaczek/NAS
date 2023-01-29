@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Test the BinaryStringNetworkRepresentationWithSkipBitModel using the MNIST dataset.
+Test the BinaryNetworkRepresentationWithSkipBitModel using the MNIST dataset.
 """
 
 import os
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     import random
 
     from sklearn.preprocessing import LabelBinarizer
-    from models.binary_string_network_representation_with_skip_bit_model import BinaryStringNetworkRepresentationWithSkipBitModel
+    from NAS.models.binary_network_representation_with_skip_bit_model import BinaryNetworkRepresentationWithSkipBitModel
 
     train_images = mnist.train_images()
     train_labels = mnist.train_labels()
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     x_train = train_images.reshape(n, 28, 28, 1)[selection]
     x_train = x_train / 255  # Normalize train data
 
-    model_without_skip = BinaryStringNetworkRepresentationWithSkipBitModel(
+    model_without_skip = BinaryNetworkRepresentationWithSkipBitModel(
         x_train=x_train, 
         y_train=y_train,
         genes={'Stage_1': '0000', 'Stage_2': '00000000000'},  # Genes to test
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         learning_rate=(1e-3, 1e-4),
         batch_size=128
     )
-    model_with_skip = BinaryStringNetworkRepresentationWithSkipBitModel(
+    model_with_skip = BinaryNetworkRepresentationWithSkipBitModel(
         x_train=x_train, 
         y_train=y_train,
         genes={'Stage_1': '0001', 'Stage_2': '00000000001'},  # Genes to test

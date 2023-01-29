@@ -18,7 +18,7 @@ from .generic_models import GeneticModel
 K.set_image_data_format('channels_last')
 
 
-class BinaryStringNetworkRepresentationWithSkipBitModel(GeneticModel):
+class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
     """
     Model of Neural Network leyars proposed in article:
     NSGA-Net: Neural Architecture Search using Multi-Objective Genetic Algorithm
@@ -79,7 +79,7 @@ class BinaryStringNetworkRepresentationWithSkipBitModel(GeneticModel):
             raise ValueError("epochs and learning_rate must be both either integers or tuples of integers.")
 
         # Set model's attributes
-        super(BinaryStringNetworkRepresentationWithSkipBitModel, self).__init__(x_train, y_train)
+        super(BinaryNetworkRepresentationWithSkipBitModel, self).__init__(x_train, y_train)
         self.model = self.build_model(
             genes, nodes_per_stage, input_shape, kernels_per_layer, kernel_sizes,
             dense_units, dropout_probability, classes

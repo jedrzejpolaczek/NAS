@@ -1,20 +1,15 @@
+# Why this repo exist?
+# What is NAS and E-NAS?
 # E-NAS
 Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
-# E-NAS
-Experiments about an diffrent approach to Neural Architecture Search (NAS).
-
-# File structure
+# How to use this repo
+## File structure
 * models - implementation of models and thier templates to use for search startegies.
 * search space - way of represent search space for example how we can code neural networks layers to be used and modified by search strategies.
 * search strategies - ways to find solution from search space for example genetic algorithms or reinforcement learning.
-* utils
+* examples - mostly contains jupyter notebooks with examples and explanations how each algorithm works.
 
-TODO: 
-* Add generall information about NAS, diffrent approaches and so on (in context of hyperscalar optimization and automation ML)
-* Add "classic" NAS algorithms implementation + experiments (jupyter notebooks) diveded by class of algorithms
-* Add proper cons and pros to each 
-* Add assumptions
-* Add ideas?
+# Notes:
 
 Założenia:
     1. ML to przeksztalcenia geometryczne z przestrzeni A do B

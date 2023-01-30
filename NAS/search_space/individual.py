@@ -4,11 +4,11 @@ Classes which define the individuals of a population with
 its characteristic genes, generation, crossover and
 mutation processes.
 """
-
 import math
 import pprint
 import random
 import numpy as np
+from loguru import logger
 
 
 def random_log_uniform(minimum, maximum, base, eps=1e-12):
@@ -39,7 +39,7 @@ class Individual(object):
         genome:dict , 
         genes: str, 
         crossover_rate: float, 
-        mutation_rate: float, 
+        mutation_rate: float,
         additional_parameters=None
     ):
         """
@@ -64,20 +64,26 @@ class Individual(object):
         self.mutation_rate = mutation_rate
         self.fitness = None  # Until evaluated an individual fitness is unknown
         assert additional_parameters is None
-
+    
     def validate_genome(self) -> None:
         """Check genome structure."""
         if type(self.genome) != dict:
-            raise TypeError("Genome must be a dictionary.")
+            msg = "Genome must be a dictionary."
+            logger.error(msg)
+            raise TypeError(msg)
 
         for gene, properties in self.genome.items():
             if type(gene) != str:
-                raise TypeError("Gene names must be strings.")
+                msg = "Gene names must be strings."
+                logger.error(msg)
+                raise TypeError(msg)
 
     def validate_genes(self) -> None:
         """Check that genes are compatible with genome."""
         if set(self.genome.keys()) != set(self.genes.keys()):
-            raise ValueError("Genes passed don't correspond to individual's genome.")
+            msg = "Genes passed don't correspond to individual's genome."
+            logger.error(msg)
+            raise ValueError(msg)
 
     def get_genes(self) -> str:
         """
@@ -85,6 +91,7 @@ class Individual(object):
 
         :return str: individual's genes.
         """
+        logger.debug("return: {}".format(self.genes))
         return self.genes
 
     def get_genome(self) -> dict:
@@ -93,6 +100,7 @@ class Individual(object):
         
         :return dict: individual's genome.
         """
+        logger.debug("return: {}".format(self.genome))
         return self.genome
 
     @staticmethod
@@ -102,15 +110,21 @@ class Individual(object):
         
         :param genom (dict): dictionary of stages with a number of nodes for it.
         """
-        raise NotImplementedError("Use a subclass with genes definition.")
+        msg = "Use a subclass with genes definition."
+        logger.error(msg)
+        raise NotImplementedError(msg)
 
     def evaluate_fitness(self) -> None:
         """Template method for evaluate fitness."""
-        raise NotImplementedError("Use a subclass with genes definition.")
+        msg = "Use a subclass with evaluation definition."
+        logger.error(msg)
+        raise NotImplementedError(msg)
 
     def get_additional_parameters(self) -> None:
         """Template getter for additional parameters."""
-        raise NotImplementedError("Use a subclass with genes definition.")
+        msg = "Use a subclass with additional parameters definition."
+        logger.error(msg)
+        raise NotImplementedError(msg)
 
     def get_fitness(self) -> list:
         """
@@ -120,9 +134,10 @@ class Individual(object):
         """
         if self.fitness is None:
             self.evaluate_fitness()
+        logger.debug("return: {}".format(self.fitness))
         return self.fitness
 
-    def reproduce(self, partner) -> None:
+    def reproduce(self, partner):
         """
         Mix genes from self and partner randomly and
         return a new instance of an individual. Do not mutate parents.
@@ -137,13 +152,17 @@ class Individual(object):
             else:
                 child_genes[name] = value
         
+        
         # Create new same class individual
-        return self.__class__(
+        child = self.__class__(
             self.x_train, self.y_train, self.genome, child_genes, self.crossover_rate, self.mutation_rate,
             **self.get_additional_parameters()
         )
 
-    def crossover(self, partner) -> None:
+        logger.debug("return: {}".format(child))
+        return child
+
+    def crossover(self, partner):
         """
         Mix genes from self and partner randomly.
         Mutates each parent instead of producing a new instance (child).
@@ -156,6 +175,8 @@ class Individual(object):
                 self.get_genes()[name], partner.get_genes()[name] = partner.get_genes()[name], self.get_genes()[name]
                 self.set_fitness(None)
                 partner.set_fitness(None)
+        logger.debug("produce: {}".format(self))
+        logger.debug("produce: {}".format(partner))
 
     def mutate(self) -> None:
         """Mutate instance's genes with a certain probability."""
@@ -167,6 +188,7 @@ class Individual(object):
                 else:
                     self.get_genes()[name] = round(random_log_uniform(minimum, maximum, log_scale), 4)
                 self.set_fitness(None)  # The mutation produces a new individual
+        logger.debug("produce: {}".format(self))
 
     def get_fitness_status(self) -> bool:
         """
@@ -174,7 +196,9 @@ class Individual(object):
 
         :return bool: Return True if individual's fitness in known.
         """
-        return self.fitness is not None
+        status = self.fitness is not None
+        logger.debug("return: {}".format(status))
+        return status
 
     def set_fitness(self, value: list) -> None:
         """
@@ -183,6 +207,7 @@ class Individual(object):
         :param value (list): value to be assign to fitness.
         """
         self.fitness = value
+        logger.debug("produce: {}".format(self.fitness))
 
     def copy(self):
         """
@@ -196,6 +221,7 @@ class Individual(object):
         )
         individual_copy.set_fitness(self.fitness)
 
+        logger.debug("return: {}".format(individual_copy))
         return individual_copy
 
     def __str__(self) -> str:

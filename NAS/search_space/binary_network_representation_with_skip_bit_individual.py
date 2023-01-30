@@ -119,8 +119,6 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         self.learning_rate = learning_rate
         self.batch_size = batch_size
 
-        self.fitness: list = None
-
     @staticmethod
     def generate_random_genome(nodes_per_stage: tuple) -> dict:
         """
@@ -149,7 +147,10 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
 
         :return dict: dictionary of stages with a number of nodes for it, organise as {stage_1: x_1, stage_2, x_2, ..., stahe_n, x_n}.
         """
-        return {'Stage_{}'.format(i + 1): int(K_s * (K_s - 1) / 2)+1 for i, K_s in enumerate(nodes_per_stage)}
+        genome = {'Stage_{}'.format(i + 1): int(K_s * (K_s - 1) / 2)+1 for i, K_s in enumerate(nodes_per_stage)}
+
+        logger.debug("return: {}".format(genome))
+        return genome
     
     @staticmethod
     def generate_random_genes(genome: dict) -> str:
@@ -189,6 +190,8 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         genes = {}
         for name, connections in genome.items():
             genes[name] = ''.join([random.choice(['0', '1']) for _ in range(connections)])
+        
+        logger.debug("return: {}".format(genes))
         return genes
 
     def evaluate_fitness(self) -> None:
@@ -200,6 +203,7 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         )
 
         self.fitness = [model.cross_validate()]
+        logger.debug("produce: {}".format(self.fitness))
 
     def get_additional_parameters(self) -> dict:
         """
@@ -207,7 +211,7 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         
         :return dict: dictionary with all individual's parameters.
         """
-        return {
+        additional_parameters = {
             'nodes_per_stage': self.nodes_per_stage,
             'input_shape': self.input_shape,
             'kernels_per_layer': self.kernels_per_layer,
@@ -220,6 +224,9 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
             'learning_rate': self.learning_rate,
             'batch_size': self.batch_size
         }
+        
+        logger.debug("return: {}".format(additional_parameters))
+        return additional_parameters
 
     def mutate(self) -> None:
         """Mutate instance's genes with a certain probability."""
@@ -230,4 +237,5 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
             if new_connections != connections:
                 self.set_fitness(None)  # A mutation means the individual has to be re-evaluated
                 self.get_genes()[name] = new_connections
+        logger.debug("produce: {}".format(self))
 

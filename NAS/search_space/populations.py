@@ -3,7 +3,7 @@
 Population class
 """
 
-import itertools
+import numpy as np
 import operator
 from loguru import logger
 
@@ -32,7 +32,9 @@ class Population(object):
         self.species = species
         self.maximize = maximize
         if individual_list is None and size is None:
-            raise ValueError("Either pass a list of individuals or a population size for a random population.")
+            msg = "Either pass a list of individuals or a population size for a random population."
+            logger.error(msg)
+            raise ValueError(msg)
         elif individual_list is None:
             if additional_parameters is None:
                 additional_parameters = {}
@@ -50,27 +52,76 @@ class Population(object):
             self.population_size = len(individual_list)
             self.individuals = individual_list
 
-    def add_individual(self, individual):
+    def add_individual(self, individual) -> None:
+        """
+        Add individual to individual list (to population).
+
+        :param individual (self.species.__class__): individual to ba added.
+        """
         assert type(individual) is self.species
         self.individuals.append(individual)
         self.population_size += 1
+        logger.debug("produce: {}".format(self.population_size))
+        
 
     def get_species(self):  # In other (Python) words, object class
+        """
+        Return class of individuals in population.
+
+        :return self.species.__class__: class of individuals in population.
+        """
+        logger.debug("return: {}".format(self.species))
         return self.species
 
-    def get_size(self):
+    def get_size(self) -> int:
+        """
+        Return size of population.
+
+        :return int: size of population..
+        """
+        logger.debug("return: {}".format(self.population_size))
         return self.population_size
 
     def get_fittest(self):
+        """
+        Return fittest individual from population.
+
+        :return self.species.__class__: fittest individual from population.
+        """
         if self.maximize:
-            return max(self.individuals, key=operator.methodcaller('get_fitness'))
-        return min(self.individuals, key=operator.methodcaller('get_fitness'))
+            fittest = max(self.individuals, key=operator.methodcaller('get_fitness'))
+        else:
+            fittest = min(self.individuals, key=operator.methodcaller('get_fitness'))
+
+        logger.debug("return: {}".format(fittest))
+        return fittest
 
     def get_data(self):
+        """
+        Return data for neural network model to train on.
+
+        :return numpy.array, numpy.array: data for neural network model to train on.
+        """
+        logger.debug("return: {}".format(self.x_train))
+        logger.debug("return: {}".format(self.y_train))
         return self.x_train, self.y_train
 
-    def get_fitness_criteria(self):
+    def get_fitness_criteria(self) -> bool:
+        """
+        Return fitness criteria.
+
+        :return bool: fitness criteria.
+        """
+        logger.debug("return: {}".format(self.maximize))
         return self.maximize
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int):
+        """
+        Return individual from individuals under pointed index.
+
+        :param item (int): index pointed to specyfic individual in individuals list.
+
+        :return self.species.__class__: individual from individuals under pointed index.
+        """
+        logger.debug("return: {}".format(self.individuals[item]))
         return self.individuals[item]

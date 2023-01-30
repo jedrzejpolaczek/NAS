@@ -34,18 +34,6 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.ranks: dict = None
         self.crowding_distance_metrics = None
         self.non_domiated_sorted_indicies = None
-    
-    def run(self, max_generations: int) -> None:
-        """
-        Execute the main genetic algorithm loop established a number of times.
-        The main genetic algorithm loop contains evolving population method.
-
-        :param max_generations (int): value to set how many times the main genetic algorithm loop need to be done.
-        """
-        logger.info("Starting genetic algorithm.")
-        while self.generation <= max_generations:
-            self.evolve_population()
-            self.generation += 1
 
     def evolve_population(self):
         """
@@ -289,37 +277,3 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.guard("create_new_population", "new_population", len(new_population), self.population.get_size())
         return new_population
     
-    def tournament_select(self):
-        """
-        Choose fittest individual from random sub set of initial population.
-        
-        :retrun self.population.speciec.__class__: fittest individual from tounrmanet.
-        """
-        tournament = self.get_population_type()(
-            self.population.get_species(), 
-            self.x_train, 
-            self.y_train, 
-            individual_list=[
-                self.population[i] for i in random.sample(range(self.population.get_size()), self.tournament_size)
-            ], 
-            maximize=self.population.get_fitness_criteria()
-        )
-
-        fittest_individual = tournament.get_fittest()
-
-        self.guard("tournament_select", "fittest_individual", fittest_individual)
-        return fittest_individual
-
-    @staticmethod
-    def guard(fun_name: str, name: str, main_object, object_to_compare=None) -> None:
-        """
-        Guard method to check if data are correct and to log them.
-
-        :param fun_name (str): from where we get the values.
-        :param name (str): name of the value.
-        :param main_object (object): object to be loged and maybe checked.
-        :param object_to_compare (object): object to be compared with main object.
-        """
-        if object_to_compare is not None:
-            assert main_object == object_to_compare
-        logger.debug("{}:{} (type: {}): {}".format(fun_name, name, type(main_object), main_object))

@@ -47,7 +47,15 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
             self.evolve_population()
             self.generation += 1
 
-    def evolve_population(self):  # TODO: add typing and docstring
+    def evolve_population(self):
+        """
+        Evolve current population. To evolve population we need to:
+        1. Calculate fronts for each individual.
+        2. Calculate distance metrics for individuals.
+        3. Based on distance metrics choose best half of next generation population.
+        4. In the way of tournament choose parents for another half of next generation population.
+        5. Mutate children of winners of the tournament.
+        """
         if self.population.get_size() < self.tournament_size:
             msg = "Population size is smaller than tournament size."
             logger.error(msg)
@@ -81,7 +89,12 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
 
         self.guard("evolve_population", "self.population.individuals", self.population.individuals)
     
-    def calculate_fitnesses(self) -> np.array:  # TODO: add typing and docstring
+    def calculate_fitnesses(self) -> np.array:
+        """
+        Calculate fitnesses for each individual in population and store it in array of fitnesses.
+
+        :return numpy.array: array of fitnesses for whole population.
+        """
         fitnesses = []
         for individual in self.population.individuals:
             fitnesses.append(individual.get_fitness())
@@ -89,17 +102,25 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.guard("normalize_fitnesses", "fitnesses", len(fitnesses), self.population.get_size())
         return np.array(fitnesses)
     
-    def normalize_fitnesses(self) -> np.array:  # TODO: add typing and docstring
+    def normalize_fitnesses(self):
+        """
+        Normalise each objectives, so they are in the range [0,1].
+        This is necessary, so each objective's contribution have the same magnitude to the crowding metric.
+        """
         self.fitnesses = (self.fitnesses - np.min(self.fitnesses)) / (np.max(self.fitnesses) - np.min(self.fitnesses))
         self.guard("normalize_fitnesses", "fitnesses", self.fitnesses)
     
-    def fast_nondominated_sort(self) :  # TODO: add typing and docstring
+    def fast_nondominated_sort(self) -> np.array:  # calculate_pareto_fronts
         """
-        Calculate Pareto fronts
-        The population is sorted and partitioned into fronts (F1, F2, etc.), 
-        where F1 (first front) indicates the approximated Pareto front.
+        The fast implementation of non dominated sort, as described in the original NSGA-II paper.
+        We pre calculate the domination set for each individual (the set of other individuals this individual dominates).
+        And we precalculate the domination counts (how many other individuals dominates this individual).
+        Once we have these two things, calculating the fronts are simple:
+        - Current front is the individuals whose domination count is 0
+        - Then visit everyone in the current front's domination set, and reduce their domination count.
+        - Remove current front and Repeat
 
-        :return list: fronts is a list of fronts, each front contain index of each individual for self.population.individuals
+        :return np.array: fronts is a list of fronts, each front contain index of each individual for self.population.individuals
         """
         # Calculate dominated set for each individual
         domination_sets = []
@@ -116,13 +137,25 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
             domination_sets.append(current_domination_set)
         domination_counts = np.array(domination_counts)
 
+        # Calculating Pareto fronts
+        fronts = self.calculate_pareto_fronts(domination_sets, domination_counts)
+        
+        self.guard("fast_nondominated_sort", "fronts", fronts)
+        return fronts
+    
+    def calculate_pareto_fronts(self, domination_sets: list, domination_counts: list) -> list:
+        """
+        Calculate Pareto fronts.
+
+        :return list: list of fronts where each front containing index to individual in self.population.individuals list.
+        """
         fronts = []
         while True:
             current_front = np.where(domination_counts==0)[0]
             if len(current_front) == 0:
                 logger.debug("Current front have no individuals. Therefore we stop looking for new fronts.")
                 break
-            self.guard("fast_nondominated_sort", "front", current_front)
+            self.guard("calculate_pareto_fronts", "front", current_front)
             fronts.append(current_front)
 
             for individual in current_front:
@@ -132,17 +165,28 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
                 for dominated_by_current in dominated_by_current_set:
                     domination_counts[dominated_by_current] -= 1
         
-        self.guard("fast_nondominated_sort", "fronts", fronts)
+        self.guard("calculate_pareto_fronts", "fronts", fronts)
         return fronts
     
-    def dominates(self, individual, other_individual):  # TODO: add typing and docstring
+    def dominates(self, individual, other_individual) -> bool:
+        """
+        Check if individual dominates over other individual.
+        Individual dominates over other individual if all his fitness values are larger or equal and larger from other individual.
+
+        :param individual (self.population.species.__class__): individual for which we are checking for dominance.
+        :param other_individual (self.population.species.__class__): individual to which we are checking for dominance.
+
+        :return bool: true if individual dominates over other individual.
+        """
         larger_or_equal = individual.get_fitness() >= other_individual.get_fitness()
         larger = individual.get_fitness() > other_individual.get_fitness()
 
         return np.all(larger_or_equal) and np.any(larger)  # We are using np.all in case fitness would be array
     
-    def fronts_to_nondomination_ranks(self) -> dict:  # TODO: add typing and docstring
+    def fronts_to_nondomination_ranks(self) -> dict:
         """
+        For sorting the population we need both the nondomination rank and the crowding metric.
+        We always consider the nondomination rank first, but in a tie we use the crowding metric.
         
         :return dict: dictinary of indexes of each individual for self.population.individuals
         """
@@ -154,7 +198,7 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.guard("fronts_to_nondomination_ranks", "nondomination_rank_dict", nondomination_rank_dict)
         return nondomination_rank_dict
 
-    def calculate_crowding_distance_metrics(self):  # TODO: add typing and docstring
+    def calculate_crowding_distance_metrics(self) -> np.array:
         """
         Crowding Distance is a mechanism of ranking among members of a front, 
         which are dominating or dominated by each other.
@@ -182,8 +226,12 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.guard("calculate_crowding_distance_metrics", "crowding_distance_metrics", len(crowding_distance_metrics), number_of_individuals)
         return crowding_distance_metrics
     
-    def nondominated_sort(self):  # TODO: add typing and docstring
-        
+    def nondominated_sort(self) -> list:
+        """
+        Sorting population indexes using nondominated sort to get list from indices with highest ranks to lowest.
+
+        :return list: list of indices sorted from indices with highest ranks to lowest.
+        """
         number_of_individuals = len(self.crowding_distance_metrics)
         indicies = list(range(number_of_individuals))
 
@@ -211,8 +259,16 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.guard("nondominated_sort", "non_domiated_sorted_indicies", non_domiated_sorted_indicies)
         return non_domiated_sorted_indicies
 
-    def create_new_population(self):  # TODO: add typing and docstring
-        """Survive current population, tournament, crossover them and mutate their children."""
+    def create_new_population(self) -> np.array:
+        """
+        Create new population by:
+        1. Only the fittests half of population will survive to next generation.
+        2. Another half of next population are children of winners of tournaments.
+        3. Reproduce winner of tournaments (if they are lucky).
+        4. Mutate children of winners of tournaments.
+        
+        :return numpy.array: list of individuals that will create next generation population.
+        """
 
         # New population first half is from survivals from previous generation
         surviving_individuals = []
@@ -233,7 +289,12 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         self.guard("create_new_population", "new_population", len(new_population), self.population.get_size())
         return new_population
     
-    def tournament_select(self):  # TODO: add typing and docstring
+    def tournament_select(self):
+        """
+        Choose fittest individual from random sub set of initial population.
+        
+        :retrun self.population.speciec.__class__: fittest individual from tounrmanet.
+        """
         tournament = self.get_population_type()(
             self.population.get_species(), 
             self.x_train, 
@@ -247,10 +308,18 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         fittest_individual = tournament.get_fittest()
 
         self.guard("tournament_select", "fittest_individual", fittest_individual)
-        return tournament.get_fittest()
+        return fittest_individual
 
     @staticmethod
-    def guard(fun_name, name, main_object, object_to_compare=None):  # TODO: add typing and docstring
+    def guard(fun_name: str, name: str, main_object, object_to_compare=None) -> None:
+        """
+        Guard method to check if data are correct and to log them.
+
+        :param fun_name (str): from where we get the values.
+        :param name (str): name of the value.
+        :param main_object (object): object to be loged and maybe checked.
+        :param object_to_compare (object): object to be compared with main object.
+        """
         if object_to_compare is not None:
             assert main_object == object_to_compare
         logger.debug("{}:{} (type: {}): {}".format(fun_name, name, type(main_object), main_object))

@@ -59,7 +59,7 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         crossover_rate: float = 0.3, 
         mutation_rate: float = 0.1, 
         nodes_per_stage: tuple = (3, 5),
-        input_shape: tuple = (28, 28, 1), 
+        input_shape: tuple = (32, 32, 3), 
         kernels_per_layer: tuple = (20, 50),
         kernel_sizes: tuple = ((5, 5), (5, 5)),
         dense_units: int = 500,
@@ -82,12 +82,12 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         :param crossover_rate (float): probability of crossover (GA). Crossover operation crossover two individuals. Default value is only example for easier class usage.
         :param mutation_rate (float): probability of mutation (GA). Mutation change random bits in individuals. Default value is only example for easier class usage.
         :param nodes_per_stage (tuple): number of nodes for each stage. Default value is only example for easier class usage.
-        :param input_shape (tuple): shape of input image (NN). Default value for digit recognition example using.
+        :param input_shape (tuple): shape of input image (NN). Default value for CIFAR10.
         :param kernels_per_layer (tuple): number of kernels for each layer (NN). Kernel is a matrix, which is slid across the image and multiplied with the input such that the output is enhanced in a certain desirable manner. Default value is only example for easier class usage.
         :param kernel_sizes (tuple): size of kernels (NN). Kernel is a matrix, which is slid across the image and multiplied with the input such that the output is enhanced in a certain desirable manner. Default value is only example for easier class usage.
         :param dense_units (int): represents the output size of the dense layer (NN). Default value is only example for easier class usage.
         :param dropout_probability (float): probability of dropout (NN). Dropout operation remove values of some weights. Default value is only example for easier class usage.
-        :param classes (int): number of classes possible images (NN). Default value for digit recognition example using CAFIR10.
+        :param classes (int): number of classes possible images (NN). Default value for CAFIR10.
         :param kfold (int): Number of folds for K-Fold Cross-Validation (NN). It is way of validating neural network results. Must be at least 2. Default value is the same as one in used later in the code function sklearn.model_selection.StratifiedKFold.
         :param epochs (tuple): number of epochs neural network will be trained (NN). Epochs means how many times we will train neural network.  Default value is only example for easier class usage (NN).
         :param learning_rate (float): rate of learning means how much we will modyfie weights (NN). Default value is only example for easier class usage.

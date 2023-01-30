@@ -2,3 +2,4 @@ tensorflow==*
 scikit-learn==*
 mnist==*
 loguru==*
+keras-tuner==*

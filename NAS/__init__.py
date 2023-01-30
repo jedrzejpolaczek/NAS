@@ -18,9 +18,3 @@ try:
 except ImportError:
     logger.warning("Warning: install search space and models to use \
         BinaryNetworkRepresentationWithSkipBitIndividual and BinaryNetworkRepresentationWithSkipBitModel.")
-
-# Bayesian optimization algorithm
-try:
-    from NAS.search_strategies.bayesian_optimization import bayesian_optimization_algorithm
-except ImportError:
-    logger.warning("Warning: install search startegy to use bayesian_optimization_algorithm.")

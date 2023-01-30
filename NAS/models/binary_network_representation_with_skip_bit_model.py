@@ -5,6 +5,7 @@ Machine Learning models compatible with the Genetic Algorithm implemented using 
 
 import keras.backend as K
 import numpy as np
+from loguru import logger
 
 from keras.layers import Input, Conv2D, Activation, Add, MaxPooling2D, Flatten, Dense, Dropout
 from keras.optimizers import Adam
@@ -86,7 +87,6 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         )
         self.name = '-'.join(gene for gene in genes.values())
         self.kfold = kfold
-
         self.batch_size = batch_size
 
     def plot(self) -> None:
@@ -177,6 +177,8 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         classes: int, 
     ) -> Model:
         """
+        Build model based on genome.
+        
         :param genes (dict): dict containing stages and strings containing 0 and 1 to represent connections between nodes. Genes is the same thing as chromosome.
         :param nodes_per_stage (tuple): number of nodes for each stage.
         :param input_shape (tuple): shape of input image. Default value for digit recognition example using.
@@ -222,7 +224,7 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         x = Dropout(dropout_probability)(x)
         x = Dense(classes, activation='softmax')(x)
 
-        return Model(inputs=x_input, outputs=x, name='GeneticCNNWithSkip')
+        return Model(inputs=x_input, outputs=x, name='BinaryNetworkRepresentationWithSkipBit')
 
     def reset_weights(self) -> None:
         """Initialize model weights."""
@@ -247,11 +249,10 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         kfold = StratifiedKFold(n_splits=self.kfold, shuffle=True)
 
         for fold, (train, validation) in enumerate(kfold.split(self.x_train, np.where(self.y_train == 1)[1])):
-            # print("KFold {}/{}".format(fold + 1, self.kfold))
             self.reset_weights()
 
             for epochs, learning_rate in zip(self.epochs, self.learning_rate):
-                # print("Training {} epochs with learning rate {}".format(epochs, learning_rate))
+                logger.debug("Training {} epochs with learning rate {}".format(epochs, learning_rate))
                 self.model.compile(optimizer=Adam(learning_rate=learning_rate), loss='binary_crossentropy', metrics=['accuracy'])
                 self.model.fit(
                     self.x_train[train], 

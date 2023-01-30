@@ -20,6 +20,8 @@ class Population(object):
         species, 
         x_train, 
         y_train, 
+        x_test=None,
+        y_test=None,
         individual_list: list=None, 
         size: int=None,
         crossover_rate: float=0.5, 
@@ -29,6 +31,8 @@ class Population(object):
     ):
         self.x_train = x_train
         self.y_train = y_train
+        self.x_test = x_test
+        self.y_test = y_test
         self.species = species
         self.maximize = maximize
         if individual_list is None and size is None:

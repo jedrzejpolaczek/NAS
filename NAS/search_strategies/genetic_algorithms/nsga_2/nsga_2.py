@@ -4,7 +4,6 @@ NSGA2 class. NSGA2 stands for A fast elitist non-dominated sorting genetic algor
 
 """
 
-import random
 import functools
 import numpy as np
 from loguru import logger

@@ -27,28 +27,34 @@ if __name__ == '__main__':
 
     # Load Data
     cifar10 = tensorflow.keras.datasets.cifar10
-    (train_images, train_labels), (_, _) = cifar10.load_data()
-
-    y_train = train_labels.flatten()
+    (train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
 
     # Normalization and Reshaping
     input_shape = (32, 32, 3)
 
-    x_train=train_images.reshape(train_images.shape[0], train_images.shape[1], train_images.shape[2], 3)
+    x_train=test_images.reshape(test_images.shape[0], test_images.shape[1], test_images.shape[2], 3)
     x_train=x_train / 255.0
+    x_test=test_images.reshape(test_images.shape[0], test_images.shape[1], test_images.shape[2], 3)
+    x_test=test_images / 255.0
 
     # Use only a subsample
-    n = train_images.shape[0]
+    n_train = train_images.shape[0]
+    n_test = test_images.shape[0]
     lb = LabelBinarizer()
     lb.fit(range(10))
-    selection = random.sample(range(n), 10000)  # Use only a subsample
-    y_train = lb.transform(train_labels[selection])  # One-hot encodings
-    x_train = train_images.reshape(n, 32, 32, 3)[selection]
+    selection_train = random.sample(range(n_train), 10000)  # Use only a subsample
+    selection_test = random.sample(range(n_test), 3000)  # Use only a subsample
+    y_train = lb.transform(train_labels[selection_train])  # One-hot encodings
+    y_test = lb.transform(test_labels[selection_test])  # One-hot encodings
+    x_train = train_images.reshape(n_train, 32, 32, 3)[selection_train]
+    x_test = test_images.reshape(n_test, 32, 32, 3)[selection_test]
 
     population = Population(
         BinaryNetworkRepresentationWithSkipBitIndividual, 
         x_train, 
         y_train, 
+        x_test, 
+        y_test, 
         size=20, 
         crossover_rate=0.3, 
         mutation_rate=0.1,
@@ -62,4 +68,4 @@ if __name__ == '__main__':
     )
     ga = NSGANet(population, crossover_probability=0.2, mutation_probability=0.8)
 
-    ga.run(max_generations=5)
+    ga.run(max_generations=2)

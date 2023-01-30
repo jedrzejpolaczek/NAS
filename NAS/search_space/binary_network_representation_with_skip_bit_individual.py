@@ -6,6 +6,7 @@ its characteristic genes, generation, crossover and
 mutation processes.
 """
 import random
+import tensorflow
 import numpy
 from loguru import logger
 
@@ -194,14 +195,23 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         logger.debug("return: {}".format(genes))
         return genes
 
-    def evaluate_fitness(self) -> None:
-        """Create model and perform cross-validation."""
+    def get_model(self) -> tensorflow.keras.models.Model:
+        """
+        Return model for this individual.
+        
+        :return tensorflow.keras.models.Model: model for this individual.
+        """
         model = BinaryNetworkRepresentationWithSkipBitModel(
             self.x_train, self.y_train, self.genes, self.nodes_per_stage, self.input_shape, self.kernels_per_layer,
             self.kernel_sizes, self.dense_units, self.dropout_probability, self.classes,
             self.kfold, self.epochs, self.learning_rate, self.batch_size
         )
 
+        return model
+    
+    def evaluate_fitness(self) -> None:
+        """Create model and perform cross-validation."""
+        model = self.get_model()
         self.fitness = [model.cross_validate()]
         logger.debug("produce: {}".format(self.fitness))
 
@@ -238,4 +248,3 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
                 self.set_fitness(None)  # A mutation means the individual has to be re-evaluated
                 self.get_genes()[name] = new_connections
         logger.debug("produce: {}".format(self))
-

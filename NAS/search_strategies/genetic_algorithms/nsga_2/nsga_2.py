@@ -224,10 +224,9 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         while len(offsprings) != (self.population.get_size()/2):
             parent_first = self.tournament_select()
             parent_second = self.tournament_select()
-            if random.random() < self.crossover_probability:
-                offspring = parent_first.crossover(parent_second)
-                offspring.mutate()
-                offsprings.append(offspring)
+            offspring = parent_first.reproduce(parent_second)
+            offspring.mutate()
+            offsprings.append(offspring)
 
         new_population = surviving_individuals + offsprings
         

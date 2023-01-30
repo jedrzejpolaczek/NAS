@@ -99,7 +99,7 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         nodes_per_stage: tuple, 
         connections: str, 
         kernels: int
-    ) -> keras.engine.keras_tensor.KerasTensor:  # TODO: add docstring
+    ) -> keras.engine.keras_tensor.KerasTensor:
         """
         Build directed acyclic graph from Conv2D and Activation layers as realisation of computational block.
 

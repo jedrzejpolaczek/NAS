@@ -101,9 +101,11 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
             genome = self.generate_random_genome(nodes_per_stage)
         if genes is None:
             genes = self.generate_random_genes(genome)
-
+            
         # Set individual's attributes
         super(BinaryNetworkRepresentationWithSkipBitIndividual, self).__init__(x_train, y_train, genome, genes, crossover_rate, mutation_rate)
+        self.validate_genome()
+        self.validate_genes()
 
         self.nodes_per_stage = nodes_per_stage
         self.input_shape = input_shape
@@ -116,6 +118,8 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.batch_size = batch_size
+
+        self.fitness: list = None
 
     @staticmethod
     def generate_random_genome(nodes_per_stage: tuple) -> dict:
@@ -226,40 +230,4 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
             if new_connections != connections:
                 self.set_fitness(None)  # A mutation means the individual has to be re-evaluated
                 self.get_genes()[name] = new_connections
-    
-    def crossover(self, partner):
-        """Mix genes from self and partner randomly and
-        return a new instance of an individual. Do not
-        mutate parents.
 
-        Other possible implementation:
-        #     child1 = self.problem.generate_individual()
-        #     child2 = self.problem.generate_individual()
-        #     num_of_features = len(child1.features)
-        #     genes_indexes = range(num_of_features)
-        #     for i in genes_indexes:
-        #         beta = self.__get_beta()
-        #         x1 = (individual1.features[i] + individual2.features[i]) / 2
-        #         x2 = abs((individual1.features[i] - individual2.features[i]) / 2)
-        #         child1.features[i] = x1 + beta * x2
-        #         child2.features[i] = x1 - beta * x2
-        #     return child1, child2
-
-        We do not use beta parameter due to we only accept values 0 or 1 in genes.
-        """
-        assert self.__class__ == partner.__class__  # Can only reproduce if they're the same species
-        child_genes = {}
-
-        for name, value in self.get_genes().items():
-            # If probability hits, overwrite the child gene with the partner gene
-            if random.random() < self.crossover_rate:  
-                child_genes[name] = partner.get_genes()[name] 
-            # if no, keep gene value
-            else:
-                child_genes[name] = value
-        
-        # Create new same class individual
-        return self.__class__(
-            self.x_train, self.y_train, self.genome, child_genes, self.crossover_rate, self.mutation_rate,
-            **self.get_additional_parameters()
-        )

@@ -101,10 +101,38 @@ class NSGANet(NSGA2):
         logger.info("End search.")
 
         logger.info("Get the optimal hyperparameters.")
-        logger.debug("tuner.get_best_hyperparameters type: {}.".format(type(tuner.get_best_hyperparameters)))
-        logger.debug("tuner.get_best_hyperparameters len: {}.".format(len(tuner.get_best_hyperparameters)))
-        best_hps = tuner.get_best_hyperparameters(num_trials = 1)[0]
-        best_model = tuner.hypermodel.build(best_hps)
+        best_hps_list = tuner.get_best_hyperparameters()
+        logger.debug("best_hps_list type: {}.".format(type(best_hps_list)))
+        logger.debug("best_hps_list len: {}.".format(len(best_hps_list)))
+        if len(best_hps_list) > 0:
+            best_hps = best_hps_list[0]
+            best_model = tuner.hypermodel.build(best_hps)
+        else:
+            best_models_list = tuner.get_best_models()
+            logger.debug("best_models_list type: {}.".format(type(best_models_list)))
+            logger.debug("best_models_list len: {}.".format(len(best_models_list)))
+            if len(best_models_list) > 0:
+                best_model = tuner.get_best_models()[0]
+            else:
+                logger.warning("Bayesan Optimization Algorithm didn't find anything! Will retrun best model from genetic algorithm.")
+                best_model = self.population.get_fittest().get_model_class_object().build_model(
+                    genes=self.population.get_fittest().genes,
+                    nodes_per_stage=self.population.get_fittest().nodes_per_stage, 
+                    input_shape=self.population.get_fittest().input_shape, 
+                    kernels_per_layer=self.population.get_fittest().kernels_per_layer, 
+                    kernel_sizes=self.population.get_fittest().kernel_sizes,
+                    dense_units=self.population.get_fittest().dense_units,
+                    dropout_probability=self.population.get_fittest().dropout_probability,
+                    classes=self.population.get_fittest().classes,\
+                )
+                best_model.compile(
+                    optimizer=Adam(learning_rate=self.population.get_fittest().learning_rate[0]), 
+                    loss='binary_crossentropy', 
+                    metrics=['accuracy']
+                )
+        
+        
+        # 
         logger.debug("best_model type: {}.".format(type(best_model)))
         history = best_model.fit(
             self.population.x_train, 
@@ -115,7 +143,6 @@ class NSGANet(NSGA2):
 
         logger.info("Evaluate model.")
         _, acc = best_model.evaluate(self.population.x_test, self.population.y_test, verbose=0)
-        logger.info('> %.3f' % (acc * 100.0))
+        logger.info('accuracy > %.3f' % (acc * 100.0))
             
         return best_model
-        # pass

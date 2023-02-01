@@ -1,5 +1,6 @@
 TODO:
-* Zaimplementować BOA
+* Poprawić BOA - dlaczego BOA nie zwraca wyników?
+* Make it preety - przemyśleć jak używa się funkcji i metod, może więcej dziedziczenia?
 * Napisać jupyter notebook'a z wyjasnieniem NSGA-2 - https://github.com/adam-katona/NSGA_2_tutorial
 * Napisać jupyter notebook'a z wyjasnieniem bayesian optimization algorithm
 * Napisać jupyter notebook'a z wyjasnieniem NSGANet

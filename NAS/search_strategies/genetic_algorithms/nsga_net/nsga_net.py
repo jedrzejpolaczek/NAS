@@ -54,13 +54,10 @@ class NSGANet(NSGA2):
         # TODO: add exploitation phase - BOA -> https://arxiv.org/pdf/1810.03522.pdf -> 3.2
         from keras.optimizers import Adam
         def model_builder(hyperparameters):
-            logger.debug("Load data.")
-            logger.debug("hyperparameters: {}".format(hyperparameters))
             fittest_individual = self.population.get_fittest()
             fittest_individual_model_object = fittest_individual.get_model_class_object()
             hyperparameters_filters = hyperparameters.Int('filters', min_value = 32, max_value = 64, step = 32)
 
-            logger.debug("Build the model.")
             model = fittest_individual_model_object.build_model(
                 genes=fittest_individual.genes,
                 nodes_per_stage=fittest_individual.nodes_per_stage, 
@@ -72,49 +69,39 @@ class NSGANet(NSGA2):
                 classes=fittest_individual.classes, 
                 hyperparameters_filters=hyperparameters_filters
             )
-            logger.debug("Model type: {}".format(type(model)))
-            
-            logger.debug("Compile the model.")
+
             model.compile(
                 optimizer=Adam(learning_rate=fittest_individual.learning_rate[0]), 
                 loss='binary_crossentropy', 
                 metrics=['accuracy']
             )
             
-            logger.debug("Return model.")
             return model
 
-        logger.info("Set tuner.")
         tuner = keras_tuner.tuners.BayesianOptimization(
                 model_builder,
                 objective='val_accuracy',
                 max_trials=50
         )
 
-        logger.info("Start search.")
         tuner.search(
                 self.population.x_train, 
                 self.population.y_train,
                 epochs=self.population.get_fittest().epochs,
                 validation_data=(self.population.x_test, self.population.y_test)
         )
-        logger.info("End search.")
 
-        logger.info("Get the optimal hyperparameters.")
         best_hps_list = tuner.get_best_hyperparameters()
-        logger.debug("best_hps_list type: {}.".format(type(best_hps_list)))
-        logger.debug("best_hps_list len: {}.".format(len(best_hps_list)))
+
         if len(best_hps_list) > 0:
             best_hps = best_hps_list[0]
             best_model = tuner.hypermodel.build(best_hps)
         else:
             best_models_list = tuner.get_best_models()
-            logger.debug("best_models_list type: {}.".format(type(best_models_list)))
-            logger.debug("best_models_list len: {}.".format(len(best_models_list)))
+
             if len(best_models_list) > 0:
                 best_model = tuner.get_best_models()[0]
             else:
-                logger.warning("Bayesan Optimization Algorithm didn't find anything! Will retrun best model from genetic algorithm.")
                 best_model = self.population.get_fittest().get_model_class_object().build_model(
                     genes=self.population.get_fittest().genes,
                     nodes_per_stage=self.population.get_fittest().nodes_per_stage, 
@@ -130,10 +117,7 @@ class NSGANet(NSGA2):
                     loss='binary_crossentropy', 
                     metrics=['accuracy']
                 )
-        
-        
-        # 
-        logger.debug("best_model type: {}.".format(type(best_model)))
+
         history = best_model.fit(
             self.population.x_train, 
             self.population.y_train,
@@ -141,8 +125,7 @@ class NSGANet(NSGA2):
             validation_data=(self.population.x_test, self.population.y_test)
         )
 
-        logger.info("Evaluate model.")
         _, acc = best_model.evaluate(self.population.x_test, self.population.y_test, verbose=0)
-        logger.info('accuracy > %.3f' % (acc * 100.0))
+        logger.info("Best model accuracy is: {}%".format(acc * 100.0))
             
         return best_model

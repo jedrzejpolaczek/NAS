@@ -194,24 +194,26 @@ class BinaryNetworkRepresentationWithSkipBitIndividual(Individual):
         
         logger.debug("return: {}".format(genes))
         return genes
-
-    def get_model(self) -> tensorflow.keras.models.Model:
+    
+    def get_model_class_object(self):  # TODO: Add docstrings
         """
-        Return model for this individual.
         
-        :return tensorflow.keras.models.Model: model for this individual.
         """
-        model = BinaryNetworkRepresentationWithSkipBitModel(
+        model_class_object = BinaryNetworkRepresentationWithSkipBitModel(
             self.x_train, self.y_train, self.genes, self.nodes_per_stage, self.input_shape, self.kernels_per_layer,
             self.kernel_sizes, self.dense_units, self.dropout_probability, self.classes,
             self.kfold, self.epochs, self.learning_rate, self.batch_size
         )
 
-        return model
+        return model_class_object
     
     def evaluate_fitness(self) -> None:
         """Create model and perform cross-validation."""
-        model = self.get_model()
+        model = BinaryNetworkRepresentationWithSkipBitModel(
+            self.x_train, self.y_train, self.genes, self.nodes_per_stage, self.input_shape, self.kernels_per_layer,
+            self.kernel_sizes, self.dense_units, self.dropout_probability, self.classes,
+            self.kfold, self.epochs, self.learning_rate, self.batch_size
+        )
         self.fitness = [model.cross_validate()]
         logger.debug("produce: {}".format(self.fitness))
 

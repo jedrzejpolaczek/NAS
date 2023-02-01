@@ -23,7 +23,7 @@ if __name__ == '__main__':
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     tensorflow.keras.utils.disable_interactive_logging()
     logger.remove()
-    logger.add(sys.stderr, level="INFO")
+    logger.add(sys.stderr, level="DEBUG")
 
     # Load Data
     cifar10 = tensorflow.keras.datasets.cifar10
@@ -54,18 +54,22 @@ if __name__ == '__main__':
         x_train, 
         y_train, 
         x_test, 
-        y_test, 
-        size=20, 
+        y_test,
+        size=5, 
         crossover_rate=0.3, 
         mutation_rate=0.1,
         additional_parameters={
             'kfold': 2, 
-            'epochs': (3, 1), 
+            'epochs': (2, 1), 
             'learning_rate': (1e-3, 1e-4), 
             'batch_size': 32
         }, 
         maximize=True
     )
-    ga = NSGANet(population, crossover_probability=0.2, mutation_probability=0.8)
+    ga = NSGANet(
+        population=population, 
+        crossover_probability=0.2, 
+        mutation_probability=0.8
+    )
 
     ga.run(max_generations=2)

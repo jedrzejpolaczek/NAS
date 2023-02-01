@@ -93,6 +93,9 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         """Draw model to validate gene-to-directed_acyclic_graph."""
         plot_model(self.model, to_file='{}.png'.format(self.name))
 
+    def get_model(self):
+        return self.model
+    
     @staticmethod
     def build_directed_acyclic_graph(
         x: keras.engine.keras_tensor.KerasTensor, 
@@ -175,6 +178,7 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         dense_units: int,
         dropout_probability: float, 
         classes: int, 
+        hyperparameters_filters=None
     ) -> Model:
         """
         Build model based on genome.
@@ -192,7 +196,7 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
         """
         x_input = Input(input_shape)
         x = x_input
-
+        
         # Building 
         for layer, kernels in enumerate(kernels_per_layer):
             # Decode internal connections
@@ -201,10 +205,13 @@ class BinaryNetworkRepresentationWithSkipBitModel(GeneticModel):
             # Check last bit of internal connections to check if we need to skip layer 
             # 0 - no direct connection input-output (creat other connections)
             # 1 - direct connection input-output (skip layer)
-            if int(connections) == 0:
+            if int(connections[-1]) == 0:
 
                 # Default input node
-                x = Conv2D(kernels, kernel_size=kernel_sizes[layer], strides=(1, 1), padding='same')(x)
+                if hyperparameters_filters is not None:
+                    x = Conv2D(filters=hyperparameters_filters, kernel_size=kernel_sizes[layer], strides=(1, 1), padding='same', kernel_initializer='he_uniform')(x)
+                else:
+                    x = Conv2D(filters=kernels, kernel_size=kernel_sizes[layer], strides=(1, 1), padding='same')(x)
                 x = Activation('relu')(x)
                 
                 # If at least one bit is 1, then we need to construct the Directed Acyclic Graph

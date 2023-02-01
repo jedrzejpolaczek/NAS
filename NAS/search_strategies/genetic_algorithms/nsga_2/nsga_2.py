@@ -167,8 +167,10 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         """
         larger_or_equal = individual.get_fitness() >= other_individual.get_fitness()
         larger = individual.get_fitness() > other_individual.get_fitness()
+        dominate = np.all(larger_or_equal) and np.any(larger)  # We are using np.all in case fitness would be array
 
-        return np.all(larger_or_equal) and np.any(larger)  # We are using np.all in case fitness would be array
+        self.guard("dominates", "dominate", dominate)
+        return dominate  
     
     def fronts_to_nondomination_ranks(self) -> dict:
         """
@@ -256,22 +258,24 @@ class NSGA2(GeneticAlgorithm):  # TODO: add typing and docstring
         
         :return numpy.array: list of individuals that will create next generation population.
         """
+        new_population = []
 
         # New population first half is from survivals from previous generation
         surviving_individuals = []
         for i in range(int(self.population.get_size()/2)):
             surviving_individuals.append(self.population.individuals[self.non_domiated_sorted_indicies[i]])
 
+        new_population = surviving_individuals
+
         # Other half of new population is offspring of winners of tournament
-        offsprings = []
-        while len(offsprings) != (self.population.get_size()/2):
+        while len(new_population) < self.population.get_size():
             parent_first = self.tournament_select()
             parent_second = self.tournament_select()
             offspring = parent_first.reproduce(parent_second)
             offspring.mutate()
-            offsprings.append(offspring)
-
-        new_population = surviving_individuals + offsprings
+            new_population.append(offspring)
+            logger.debug("Len of new_population: {}".format(len(new_population)))
+            logger.debug("Len of self.population.get_size(): {}".format(self.population.get_size()))
         
         self.guard("create_new_population", "new_population", len(new_population), self.population.get_size())
         return new_population

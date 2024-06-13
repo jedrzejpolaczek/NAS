@@ -1,4 +1,9 @@
 TODO:
+1. Ustalić test casy (jakie sieci optymalizujemy i na jakich zbiorach)
+2. TODO: Define what is small, medium and large dataset.
+
+
+
 * SPRAWDZIĆ CZY BOA Z keras_tuner DZIAŁA TAK SAMO JAK Z PAPIERÓW NSGANet!!!
 * Poprawić BOA - dlaczego BOA nie zwraca wyników?
 * Make it preety - przemyśleć jak używa się funkcji i metod, może więcej dziedziczenia?

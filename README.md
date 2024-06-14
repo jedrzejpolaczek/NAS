@@ -11,6 +11,7 @@ Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
 
 
 # Usefull links and influences:
+* https://neptune.ai/blog/hyperparameter-tuning-in-python-complete-guide(general about HpO)
 * https://github.com/gmontamat/gentun (models implementation and general idea how genetic algorithms should be implemented)
 * https://github.com/anonymone/Neural-Architecture-Search (well structured knowledge about NAS)
 * https://github.com/adam-katona/NSGA_2_tutorial (idea about jupyter notebooks for algorithms and help to understand NSGA2)

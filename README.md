@@ -1,19 +1,18 @@
 <!-- PROJECT SHIELDS -->
-[![CI status][ci-status-shield]](https://github.com/ORGANIZATION/REPO/actions)
+[![CI status][ci-status-shield]](https://github.com/jedrzejpolaczek/NAS/actions)
 <!-- you can add seperate shields for diffrent CI/CD status or something else, just put link to .yml file -->
 
 # Project data
-<!-- This section contains essential details about the project. -->
 
 Project name: WIP
 
-Application name: WIP
+Application name: Hyperparameter Optimization Algoriothms Tests Framework
 
-Additional names: WIP
+Additional names: HOAT Framework
 
 Software version: 0.0.1
 
-Repository Purpose: WIP
+Repository Purpose: The repository is dedicated to providing a robust framework for testing hyperparameter optimization algorithmsin machine learning models, supporting various optimization algorithms and tracking experiment results efficiently.
 
 # Table of Contents
 <!-- List of sections and their corresponding links for easy navigation. -->
@@ -38,106 +37,109 @@ Repository Purpose: WIP
 11. [Screenshots/Media](#screenshotmedia)
 12. [Release History](#release-history)
 
-# Project task board
-<!-- Provide a link or description of the project's task board for tracking progress. -->
-
-Project task board: WIP
 
 # Technical details
-<!-- Outline specific technical aspects of the project like architecture, languages used, etc. -->
-WIP
-<!--
-Example:
-The application is built using Python and Tensorflow as main AI framework.
--->
+The Hyperparameter Optimization Algoriothms Tests Framework is built using Python. It supports multiple optimization strategies. The framework allows for easy integration of custom models and provides comprehensive experiment tracking and result aggregation.
 
 ## Environment
-<!-- Describe the environment in which the application runs (e.g., server specifications, operating systems). -->
-WIP
-<!--
-Example:
-The app is deployed on AWS EC2 instances running Ubuntu 20.04, with PostgreSQL as the database.
--->
+The framework is designed to run on a Python 3.8+ environment. It can be executed locally on any operating system that supports Python, including Linux, macOS, and Windows. Docker support is provided for ease of deployment.
 
 ## File structure
-<!-- Provide an overview of the project's directory layout. -->
 ```
-├── README.md              <- The top-level README for developers using this project.
-├── data    
-│   ├── external           <- Data from third party sources.
-│   ├── interim            <- Intermediate data that has been transformed.
-│   ├── processed          <- The final, canonical data sets for modeling.
-│   └── raw                <- The original, immutable data dump.
+├── README.md                     <- The top-level README for developers using this project.
+├── data                          <- One place to store all data used by models.
+│   ├── external                  <- Data from third party sources.
+│   ├── interim                   <- Intermediate data that has been transformed.
+│   ├── processed                 <- The final, canonical data sets for modeling.
+│   └── raw                       <- The original, immutable data dump.
 │    
-├── docs                   <- A default Sphinx project; see sphinx-doc.org for details
+├── docs                          <- A default Sphinx project; see sphinx-doc.org for details
 │    
-├── models                 <- Trained and serialized models, model predictions, or model summaries
+├── models                        <- Trained and serialized models, model predictions, or model summaries
 │    
-├── notebooks              <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                             the creator's initials, and a short `-` delimited description, e.g.
-│                             `1.0-jqp-initial-data-exploration`.
+├── examples                      <- Examples of how to run the code.
 │    
-├── references             <- Data dictionaries, manuals, and all other explanatory materials.
+├── notebooks                     <- Jupyter notebooks. Naming convention is a number (for ordering),
+│                                    the creator's initials, and a short `-` delimited description, e.g.
+│                                    `1.0-jqp-initial-data-exploration`.
 │    
-├── reports                <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures            <- Generated graphics and figures to be used in reporting
+├── references                    <- Data dictionaries, manuals, and all other explanatory materials.
 │    
-├── requirements.txt       <- The requirements file for reproducing the analysis environment, e.g.
-│                             generated with `pip freeze > requirements.txt`
-├── requirements.dist.txt   <- The requirements file for reproducing the distribution environment
+├── reports                       <- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures                   <- Generated graphics and figures to be used in reporting
+│    
+├── requirements.txt              <- The requirements file for reproducing the analysis environment, e.g.
+│                                    generated with `pip freeze > requirements.txt`
+├── requirements.dist.txt         <- The requirements file for reproducing the distribution environment
 │
-├── setup.py               <- Make this project pip installable with `pip install -e`
-├── src                    <- Source code for use in this project.
-│   ├── __init__.py        <- Makes src a Python module                    
+├── setup.py                      <- Make this project pip installable with `pip install -e`
+├── src                           <- Source code for use in this project.
+│   ├── __init__.py               <- Makes src a Python module
 │   │
-│   ├── data               <- Scripts to download or generate data
-│   │   └── make_dataset.py
+│   ├── data                      <- Scripts to manages dataset loading and preprocessing.
+│   │   ├── __init__.py           <- Makes data a Python module.
+│   │   ├── data_loader.py        <- Loads datasets from various sources.
+│   │   └── preprocess.py         <- Handles data preprocessing tasks.
 │   │
-│   ├── features           <- Scripts to turn raw data into features for modeling
-│   │   └── build_features.py
+│   ├── models                    <- Scripts to manages the creation of machine learning models.
+│   │   ├── __init__.py           <- Makes models a Python module.
+│   │   └── model_factory.py      <- Creates models based on specified types and hyperparameters.
 │   │
-│   ├── models             <- Scripts to train models and then use trained models to make predictions
-│   │   ├── predict_model.py
-│   │   └── train_model.py
+│   ├── optimization              <- Contains hyperparameter optimization algorithms.
+│   │   ├── __init__.py           <- Makes optimization a Python module.
+│   │   ├── grid_search.py        <- Implements grid search optimization.
+│   │   └── random_search.py      <- Implements random search optimization.
 │   │
-│   └── visualization      <- Scripts to create exploratory and results oriented visualizations
-│       └── visualize.py
+│   ├── evaluation                <- Scripts to handles model evaluation and result aggregation.
+│   │   ├── __init__.py           <- Makes evaluation a Python module.
+│   │   ├── metrics.py            <- Calculates performance metrics.
+│   │   └── result_aggregator.py  <- Aggregates and compares optimization results.
+│   │
+│   ├── experiment_management     <- Scripts to manages experiment tracking and metadata.
+│   │   ├── __init__.py           <- Makes experiment_management a Python module.
+│   │   └── experiment_tracker.py <- Tracks and logs experiment details.
+│   │
+│   ├── orchestration             <- Scripts to orchestrates the overall experiment workflow.
+│   │   ├── __init__.py           <- Makes orchestration a Python module.
+│   │   └── orchestrator.py       <- Coordinates the data loading, model training, and optimization processes.
+│   │
+│   ├── utils                     <- Contains utility functions and configuration settings.
+│   │   ├── __init__.py           <- Makes utils a Python module.
+│   │   ├── config.py             <- Manages configuration settings.
+│   │   └── logger.py             <- Handles logging across the framework.
+│   │
+│   └── main.py                   <- Entry point to run the entire hyperparameter testing framework.
 │
-└── tests                  <- Test scripts 
+└── tests                         <- Test scripts.
 ```
 ## Required tools
-<!-- List tools and libraries required for building and running the code. --->
-WIP
-<!--
-Example:
-- Node.js (v14 or above)
-- Python (v3.8) (libraries in file requirements.txt)
-- Docker
--->
+- Python 3.8+
+- Docker (optional, for containerized deployment)
+- Libraries specified in `requirements.txt`
 
 ## Build procedure
-<!-- Steps to build or compile the project. -->
-WIP
-<!--
-Example:
-1. Clone the repository
-2. Run command `docker build .` to create Docker image
--->
+```bash
+   git clone https://github.com/jedrzejpolaczek/NAS
+   cd NAS
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   pip install -r requirements.txt
+   python src/main.py
+```
 
 # Usage
-<!-- Instructions on how to use the application or code with examples. -->
-WIP
-<!--
-Example:
-To start the application, navigate to the project directory and run command: 
+To start the hyperparameter optimization process, run the following command after setting up the environment:
 ```bash
-docker-compose up
+    python src/main.py
 ```
--->
+This will initiate the optimization workflow based on the configurations specified in `src/utils/config.py`.
 
 # Testing Information
-<!-- How to run tests for the project. -->
-WIP
+To run the tests, use:
+```bash
+    pytest
+```
+Ensure that all dependencies are installed and the virtual environment is activated.
 
 # Other important informations
 <!-- Any additional information relevant to the project. -->
@@ -152,22 +154,17 @@ Example:
 -->
 
 ## Contribution Guidelines
-<!-- How others can contribute to the project, including coding standards and submission process. -->
-WIP
+* Fork the repository and create your branch from `main`.
+* Follow the coding standards mentioned above.
+* Ensure your code passes all tests before submission.
+* Submit a pull request for review.
 
 ## Versioning convention
-<!-- Explain how version numbers are assigned.-->
-WIP
-<!--
-Example 1 (recommended for libs):
-You may find versioning convention here: [Versioning convention documment](https://semver.org/)
-
-Example 2 (your own convention and how to describe it):
-Version 1.0.0: Initial release
-Version 1.1.0: New feature added
-Version 1.1.1: Minor bug fixes
-Version 2.0.0: New release
--->
+Versioning follows [Versioning convention documment](https://semver.org/):
+* Version 1.0.0: Initial release
+* Version 1.1.0: New feature added
+* Version 1.1.1: Minor bug fixes
+* Version 2.0.0: New release
 
 ## FAQs/Troubleshooting
 <!-- Frequently asked questions or common troubleshooting scenarios. -->
@@ -181,11 +178,7 @@ Example:
 -->
 
 ## License
-<!-- Information about the project's license. -->
-WIP
-<!--
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
--->
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact Information
 <!-- Where to direct questions and discussions about the project. -->
@@ -219,17 +212,7 @@ Below are some screenshots and media demonstrating the application in action:
 -->
 
 # Release history
-<!-- Provide a record of release versions and changes. -->
-WIP
-<!-- 
-Example 1:
-You can put a link to the appropriate file or git branch history convention.
-
-Example 2:
-- v1.0.0: Initial launch
-- v1.1.0: Added user profile feature
-- v1.2.0: Improved performance and bug fixes
--->
+* v0.0.1: Initial launch with basic optimization features.
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[ci-status-shield]: https://github.com/ORGANIZATION/REPO/actions/workflows/main.yml/badge.svg?branch=main
+[ci-status-shield]: https://github.com/jedrzejpolaczek/NAS/actions/workflows/main.yml/badge.svg?branch=main

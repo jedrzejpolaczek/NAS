@@ -87,8 +87,11 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 │   │
 │   ├── optimization              <- Contains hyperparameter optimization algorithms.
 │   │   ├── __init__.py           <- Makes optimization a Python module.
-│   │   ├── grid_search.py        <- Implements grid search optimization.
-│   │   └── random_search.py      <- Implements random search optimization.
+│   │   ├── search_space          <- Way of implementation the space of potential solutions.
+│   │   └── search_strategies     <- Algorithms for searching a space of solutions 
+│   │       │                        (Hyperparameter Optimisation Algorithms).
+│   │       ├── grid_search.py    <- Implements grid search optimization.
+│   │       └── random_search.py  <- Implements random search optimization.
 │   │
 │   ├── evaluation                <- Scripts to handles model evaluation and result aggregation.
 │   │   ├── __init__.py           <- Makes evaluation a Python module.

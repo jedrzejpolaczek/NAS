@@ -14,7 +14,7 @@ from keras.utils import plot_model
 from sklearn.model_selection import StratifiedKFold
 import keras
 
-from .generic_models import GeneticModel
+from .genetic_models import GeneticModel
 
 K.set_image_data_format('channels_last')
 

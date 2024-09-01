@@ -1,0 +1,27 @@
+{
+    "data_path": "data/example_dataset.csv",
+    "log_dir": "logs/",
+    "test_size": 0.2,
+    "experiments": [
+        {
+            "dataset": "example_dataset",
+            "model": "random_forest",
+            "optimizer": "grid_search"
+        },
+        {
+            "dataset": "example_dataset",
+            "model": "svm",
+            "optimizer": "random_search"
+        }
+    ],
+    "param_grid": {
+        "n_estimators": [100, 200],
+        "max_depth": [3, 5, 10]
+    },
+    "param_distributions": {
+        "C": [0.1, 1, 10],
+        "gamma": [0.001, 0.01, 0.1]
+    },
+    "cv": 3,
+    "n_iter": 10
+}

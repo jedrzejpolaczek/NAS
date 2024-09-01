@@ -1,1 +1,0 @@
-# MO-GOMEA stands for Multi-objective Gene-pool Optimal Mixing Evolutionary Algorithm

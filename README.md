@@ -1,71 +1,235 @@
-# Why this repo exist?
-# What is NAS and E-NAS?
-# E-NAS
-Experiments about an evolutionary approach to Neural Architecture Search (E-NAS)
-# How to use this repo
+<!-- PROJECT SHIELDS -->
+[![CI status][ci-status-shield]](https://github.com/ORGANIZATION/REPO/actions)
+<!-- you can add seperate shields for diffrent CI/CD status or something else, just put link to .yml file -->
+
+# Project data
+<!-- This section contains essential details about the project. -->
+
+Project name: WIP
+
+Application name: WIP
+
+Additional names: WIP
+
+Software version: 0.0.1
+
+Repository Purpose: WIP
+
+# Table of Contents
+<!-- List of sections and their corresponding links for easy navigation. -->
+1. [Project Data](#project-data)
+3. [Project Task Board](#project-task-board)
+4. [Technical Details](#technical-details)
+   - [Environment](#environment)
+   - [File Structure](#file-structure)
+   - [Required Tools](#required-tools)
+   - [Build Procedure](#build-procedure)
+5. [Usage](#usage)
+6. [Testing Information](#testing-information)
+7. [Other Important Information](#other-important-information)
+   - [Coding standards](#coding-standards)
+   - [Knowledge base](#knowledge-base)
+   - [Contribution Guidelines](#contribution-guidelines)
+   - [Versioning Convention](#versioning-convention)
+   - [FAQs/Troubleshooting](#faqstroubleshooting)
+   - [License](#license)
+9. [Contact Information](#contact-information)
+10. [Acknowledgments](#acknowledgments)
+11. [Screenshots/Media](#screenshotmedia)
+12. [Release History](#release-history)
+
+# Project task board
+<!-- Provide a link or description of the project's task board for tracking progress. -->
+
+Project task board: WIP
+
+# Technical details
+<!-- Outline specific technical aspects of the project like architecture, languages used, etc. -->
+WIP
+<!--
+Example:
+The application is built using Python and Tensorflow as main AI framework.
+-->
+
+## Environment
+<!-- Describe the environment in which the application runs (e.g., server specifications, operating systems). -->
+WIP
+<!--
+Example:
+The app is deployed on AWS EC2 instances running Ubuntu 20.04, with PostgreSQL as the database.
+-->
+
 ## File structure
-* models - implementation of models and thier templates to use for search startegies.
-* search space - (encoding) way of represent search space for example how we can code neural networks layers to be used and modified by search strategies. Most of the time implementation of it will be individuals and population for genetic algorithm.
-* search strategies - ways to find solution from search space for example genetic algorithms or reinforcement learning.
-* examples - mostly contains jupyter notebooks with examples and explanations how each algorithm works.
+<!-- Provide an overview of the project's directory layout. -->
+```
+├── README.md              <- The top-level README for developers using this project.
+├── data    
+│   ├── external           <- Data from third party sources.
+│   ├── interim            <- Intermediate data that has been transformed.
+│   ├── processed          <- The final, canonical data sets for modeling.
+│   └── raw                <- The original, immutable data dump.
+│    
+├── docs                   <- A default Sphinx project; see sphinx-doc.org for details
+│    
+├── models                 <- Trained and serialized models, model predictions, or model summaries
+│    
+├── notebooks              <- Jupyter notebooks. Naming convention is a number (for ordering),
+│                             the creator's initials, and a short `-` delimited description, e.g.
+│                             `1.0-jqp-initial-data-exploration`.
+│    
+├── references             <- Data dictionaries, manuals, and all other explanatory materials.
+│    
+├── reports                <- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures            <- Generated graphics and figures to be used in reporting
+│    
+├── requirements.txt       <- The requirements file for reproducing the analysis environment, e.g.
+│                             generated with `pip freeze > requirements.txt`
+├── requirements.dist.txt   <- The requirements file for reproducing the distribution environment
+│
+├── setup.py               <- Make this project pip installable with `pip install -e`
+├── src                    <- Source code for use in this project.
+│   ├── __init__.py        <- Makes src a Python module                    
+│   │
+│   ├── data               <- Scripts to download or generate data
+│   │   └── make_dataset.py
+│   │
+│   ├── features           <- Scripts to turn raw data into features for modeling
+│   │   └── build_features.py
+│   │
+│   ├── models             <- Scripts to train models and then use trained models to make predictions
+│   │   ├── predict_model.py
+│   │   └── train_model.py
+│   │
+│   └── visualization      <- Scripts to create exploratory and results oriented visualizations
+│       └── visualize.py
+│
+└── tests                  <- Test scripts 
+```
+## Required tools
+<!-- List tools and libraries required for building and running the code. --->
+WIP
+<!--
+Example:
+- Node.js (v14 or above)
+- Python (v3.8) (libraries in file requirements.txt)
+- Docker
+-->
 
+## Build procedure
+<!-- Steps to build or compile the project. -->
+WIP
+<!--
+Example:
+1. Clone the repository
+2. Run command `docker build .` to create Docker image
+-->
 
-# Usefull links and influences:
-* https://github.com/gmontamat/gentun (models implementation and general idea how genetic algorithms should be implemented)
-* https://github.com/anonymone/Neural-Architecture-Search (well structured knowledge about NAS)
-* https://github.com/adam-katona/NSGA_2_tutorial (idea about jupyter notebooks for algorithms and help to understand NSGA2)
-* https://www.researchgate.net/figure/Flow-chart-of-step-by-step-procedure-of-NSGA-II-algorithm_fig3_261922808
-* https://github.com/ianwhale/nsga-net (starting point of this work)
-# Notes:
+# Usage
+<!-- Instructions on how to use the application or code with examples. -->
+WIP
+<!--
+Example:
+To start the application, navigate to the project directory and run command: 
+```bash
+docker-compose up
+```
+-->
 
-Założenia:
-    1. ML to przeksztalcenia geometryczne z przestrzeni A do B
-    2. ML korzysta z przestrzeni hipotez/możliwości (zdefiniowany zbiór operacji)
-        2.1 Topologia sieci definiuje przestrzen hipotez
-        2.2 Od parametrów topologi sieci (np. ilosc neuronow) zalezy wydajnosc/sprawnosc(?) sieci
-    3. Hiperparametry można zoptymalizować (jest to przestrzeń ciągła(?))
-    4. Pod co optymalizujemy? Błąd walidacji czy coś jeszcze? Dokładność?
-        4.1 Czy można zrobić NAS bez trenowania sieci?
+# Testing Information
+<!-- How to run tests for the project. -->
+WIP
 
-Wady i zalety algorytmów:
-    EA:
-        Ogólnie:
-            Założenie:
-                
-            Wady:
-                1. Potrzebuje wykonać dużo obliczeń -> jest wolny
-            Zalety:
-                1. Dobrze się sprawdza w przeszukiwaniu przestrzeni rozwiązań
-        NSGA
-            Założenie:
+# Other important informations
+<!-- Any additional information relevant to the project. -->
+## Coding standards
+Coding standard: [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
 
-            Wady:
-                1. 
-            Zalety:
-                1. 
-        NSGA-II
-            Założenie:
+## Knowledge base
+WIP
+<!--
+Example:
+* All API keys and sensitive data are stored in environment variables.
+-->
 
-            Wady:
-                1. 
-            Zalety:
-                1.             
-    RL:
-        Założenie:
-            
-        Wady:
-            1. łatwo wpada w lokalne optimum
-        Zalety:
-            1. szybko znajduje lokalne optimum "reagując" na to co się dzieje
+## Contribution Guidelines
+<!-- How others can contribute to the project, including coding standards and submission process. -->
+WIP
 
-Problemy:
-    Ogólnie:
-        1. Każdy algorytm (EA, RL, itd.) potrzebuje parametrów wejściowych więc mogliobyśmy używać w kółko algorytmów żeby dopasować idealne parametry dla nich itd.
-    EA:
-        1.
-    RL:
-        1.
+## Versioning convention
+<!-- Explain how version numbers are assigned.-->
+WIP
+<!--
+Example 1 (recommended for libs):
+You may find versioning convention here: [Versioning convention documment](https://semver.org/)
 
-Wykorzystanie w biznesie:
-    1. RAPIDS on AWS Sagemaker
-    2. Vertex AI NAS - https://cloud.google.com/blog/products/ai-machine-learning/vertex-ai-nas-makes-the-most--advanced-ml-modeling-possible
+Example 2 (your own convention and how to describe it):
+Version 1.0.0: Initial release
+Version 1.1.0: New feature added
+Version 1.1.1: Minor bug fixes
+Version 2.0.0: New release
+-->
+
+## FAQs/Troubleshooting
+<!-- Frequently asked questions or common troubleshooting scenarios. -->
+WIP
+<!--
+Example:
+- issue with login under certain conditions,
+- slow response time on older Android devices,
+- specific problem during environment setup.
+    - how to solve it.
+-->
+
+## License
+<!-- Information about the project's license. -->
+WIP
+<!--
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+-->
+
+## Contact Information
+<!-- Where to direct questions and discussions about the project. -->
+WIP
+<!--
+Example:
+In case of any questions reach dev team through project [Slack channel](link to channel)
+-->
+
+## Acknowledgments
+<!-- Acknowledge contributors, sponsors, or any third-party resources used. -->
+WIP
+<!--
+Example:
+This project was made possible thanks to:
+- **John Doe** for initial development and ideas.
+- **Acme Corp** for providing the necessary infrastructure.
+- Special thanks to **Open Source Initiative** for resources and guides.
+-->
+
+## Screenshots/Media
+<!-- Screenshots, GIFs, or videos demonstrating the application or software. -->
+WIP
+<!--
+Example:
+Below are some screenshots and media demonstrating the application in action:
+
+- ![Main Interface](link_to_main_interface_screenshot)
+- ![Feature X Implementation](link_to_feature_x_screenshot)
+- A brief demo video of the application can be found [here](link_to_demo_video).
+-->
+
+# Release history
+<!-- Provide a record of release versions and changes. -->
+WIP
+<!-- 
+Example 1:
+You can put a link to the appropriate file or git branch history convention.
+
+Example 2:
+- v1.0.0: Initial launch
+- v1.1.0: Added user profile feature
+- v1.2.0: Improved performance and bug fixes
+-->
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[ci-status-shield]: https://github.com/ORGANIZATION/REPO/actions/workflows/main.yml/badge.svg?branch=main

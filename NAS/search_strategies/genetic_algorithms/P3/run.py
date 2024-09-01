@@ -1,1 +1,0 @@
-# GOMEA stands for Gene-pool Optimal Mixing Evolutionary Algorithm

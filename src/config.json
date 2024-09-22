@@ -4,38 +4,62 @@
     "test_size": 0.2,
     "experiments": [
         {
-            "dataset": "tabular_data",
-            "test_size": 0.2,
-            "validation_size": 0.2,
-            "model": "random_forest",
-            "optimizer": "grid_search",
-            "param_grid": {
-                "n_estimators": [100, 200],
-                "max_depth": [3, 5, 10]
+            "optimizer": {
+                "name": "grid_search",
+                "config": {
+                    "param_grid": {
+                        "n_estimators": [100, 200],
+                        "max_depth": [3, 5, 10]
+                    },
+                    "param_distributions": {
+                        "C": [0.1, 1, 10],
+                        "gamma": [0.001, 0.01, 0.1]
+                    },
+                    "cv": 3
+                }
             },
-            "param_distributions": {
-                "C": [0.1, 1, 10],
-                "gamma": [0.001, 0.01, 0.1]
+            "dataset": {
+                "name": "tabular_data",
+                "config": {
+                    "test_size": 0.2,
+                    "validation_size": 0.2
+                }
             },
-            "cv": 3,
-            "n_iter": 10
+            "model": {
+                "name": "random_forest",
+                "config": {
+                    "n_iter": 10
+                }
+            }
         },
         {
-            "dataset": "example_dataset",
-            "test_size": 0.2,
-            "validation_size": 0.2,
-            "model": "svm",
-            "optimizer": "random_search",
-            "param_grid": {
-                "n_estimators": [100, 200],
-                "max_depth": [3, 5, 10]
+            "optimizer": {
+                "name": "random_search",
+                "config": {
+                    "param_grid": {
+                        "n_estimators": [100, 200],
+                        "max_depth": [3, 5, 10]
+                    },
+                    "param_distributions": {
+                        "C": [0.1, 1, 10],
+                        "gamma": [0.001, 0.01, 0.1]
+                    },
+                    "cv": 3
+                }
             },
-            "param_distributions": {
-                "C": [0.1, 1, 10],
-                "gamma": [0.001, 0.01, 0.1]
+            "dataset": {
+                "name": "tabular_data",
+                "config": {
+                    "test_size": 0.2,
+                    "validation_size": 0.2
+                }
             },
-            "cv": 3,
-            "n_iter": 10
+            "model": {
+                "name": "svm",
+                "config": {
+                    "n_iter": 10
+                }
+            }
         }
     ]
 }

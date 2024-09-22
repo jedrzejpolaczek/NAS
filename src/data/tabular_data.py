@@ -101,3 +101,5 @@ class TabularDataLoader(DataLoader):
             columns=self.data["x"].columns
         )
 
+    def get_data(self):
+        return self.data

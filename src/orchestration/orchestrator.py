@@ -1,14 +1,40 @@
-from src.optimization.optimizer_factory import OptimizerFactory
-from src.data.data_factory import DataFactory
-from src.models.model_factory import ModelFactory
+"""
+Orchestrator for managing experiment workflows.
 
+This module provides the `Orchestrator` class, which is responsible for
+orchestrating the entire experiment workflow. It utilizes various components
+like `ComponentFactory`, `ResultAggregator`, and `ExperimentTracker`
+to manage data loading, preprocessing, model training,
+optimization, and result aggregation.
+"""
+from src.utils.component_factory import ComponentFactory
 from src.evaluation.metrics import Metrics
 from src.evaluation.result_aggregator import ResultAggregator
 from src.experiment_management.experiment_tracker import ExperimentTracker
 
 
 class Orchestrator:
-    def __init__(self, config: dict) -> None:
+    """
+    Orchestrates the entire experiment workflow.
+
+    This class facilitates running machine learning experiments by managing
+    different stages and utilizing various components.
+
+    Attributes:
+        config (dict):
+            Configuration dictionary containing parameters for
+            data loading, preprocessing, model training, and optimization.
+        component_factory (ComponentFactory):
+            Factory for creating experiment components.
+        result_aggregator (ResultAggregator):
+            Aggregator for storing experiment results.
+        experiment_tracker (ExperimentTracker):
+            Tracker for logging experiment data.
+    """
+    def __init__(
+        self,
+        config: dict
+    ) -> None:
         """
         Initializes the Orchestrator with configuration and various components.
 
@@ -18,12 +44,21 @@ class Orchestrator:
                 data loading, preprocessing, model training, and optimization.
         """
         self.config = config
-        self.data_factory = DataFactory()
-        self.model_factory = ModelFactory()
-        self.optimizer_factory = OptimizerFactory()
+        self.component_factory = ComponentFactory()
         self.result_aggregator = ResultAggregator()
         self.experiment_tracker = ExperimentTracker(config)
 
+    def get_component(
+        self,
+        component_type: str,
+        component_config: dict
+    ) -> object:
+        return self.component_factory.create_component(
+            component_type=component_type,
+            component_name=component_config["name"],
+            component_config=component_config["config"]
+        )
+    
     def run_experiment(
         self,
         experiment_config: dict
@@ -42,32 +77,15 @@ class Orchestrator:
             ValueError:
                 If the optimizer name is not recognized.
         """
-        # Select the optimizer using factory
+        # Select the optimizer, data loader and model using factory
+        optimizer = self.get_component("optimizer", experiment_config["optimizer"])
+        data_loader = self.get_component("data_loader", experiment_config["dataset"])
+        model = self.get_component("model", experiment_config["model"])
+
+        # Extract experiment details (avoid redundant variable assignments)
         optimizer_name = experiment_config["optimizer"]["name"]
-        optimizer_config = experiment_config["optimizer"]["config"]
-
-        optimizer = self.optimizer_factory.create_optimizer(
-            optimizer_name=optimizer_name,
-            optimizer_config=optimizer_config
-        )
-
-        # Select the data loader usinf factory
         dataset_name = experiment_config["dataset"]["name"]
-        dataset_config = experiment_config["dataset"]["config"]
-    
-        data_loader = self.data_factory.create_data_loader(
-            dataset_name=dataset_name,
-            dataset_config=dataset_config
-        )
-
-        # Select the model using factory
         model_name = experiment_config["model"]["name"]
-        model_config = experiment_config["model"]["config"]
-
-        model = self.model_factory.create_model(
-            model_name=model_name,
-            model_config=model_config
-        )
 
         # Load and pre-process data
         data = data_loader.load_data(dataset_name)

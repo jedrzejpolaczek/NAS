@@ -8,8 +8,6 @@ to manage data loading, preprocessing, model training,
 optimization, and result aggregation.
 """
 from src.utils.component_factory import ComponentFactory
-from src.evaluation.metrics import Metrics
-from src.evaluation.result_aggregator import ResultAggregator
 from src.experiment_management.experiment_tracker import ExperimentTracker
 
 
@@ -26,8 +24,6 @@ class Orchestrator:
             data loading, preprocessing, model training, and optimization.
         component_factory (ComponentFactory):
             Factory for creating experiment components.
-        result_aggregator (ResultAggregator):
-            Aggregator for storing experiment results.
         experiment_tracker (ExperimentTracker):
             Tracker for logging experiment data.
     """
@@ -45,14 +41,26 @@ class Orchestrator:
         """
         self.config = config
         self.component_factory = ComponentFactory()
-        self.result_aggregator = ResultAggregator()
-        self.experiment_tracker = ExperimentTracker(config)
+        self.experiment_tracker = ExperimentTracker(config["log_dir"])
 
     def get_component(
         self,
         component_type: str,
         component_config: dict
     ) -> object:
+        """
+        Get a component from the component factory.
+
+        Args:
+            component_type (str):
+                The type of the component to get.
+            component_config (dict):
+                The configuration of the component.
+
+        Returns:
+            object:
+                The component object created by the component factory.
+        """
         return self.component_factory.create_component(
             component_type=component_type,
             component_name=component_config["name"],
@@ -100,19 +108,13 @@ class Orchestrator:
         model.fit(x_train, y_train)
 
         # Evaluate the model
-        metrics = Metrics.evaluate(model, x_test, y_test)
-        self.result_aggregator.add_result(
-            model_name,
-            optimizer_name,
-            best_params,
-            best_score
-        )
+        metrics = model.evaluate(x_test, y_test)
 
         # Log the experiment
         experiment_data = {
-            "dataset": dataset_name,
-            "model": model_name,
             "optimizer": optimizer_name,
+            "dataset": dataset_name,
+            "model": model_name,            
             "best_params": best_params,
             "best_score": best_score,
             "metrics": metrics

@@ -1,0 +1,11 @@
+{
+    "name": "grid_search",
+    "config": {
+        "param_grid": {
+            "n_estimators": [10, 100],
+            "max_depth": [3, 5]
+        },
+        "cv": 3,
+        "scoring": "accuracy"
+    }
+}

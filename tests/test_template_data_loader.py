@@ -1,7 +1,7 @@
 import pytest
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
-from src.data.template_data_loader import DataLoader
+from src.data.templates.template_data_loader import DataLoader
 
 
 class TestDataLoader(DataLoader):

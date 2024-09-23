@@ -7,12 +7,8 @@ uses a dictionary structure to map component types to their corresponding
 classes, allowing for flexible and dynamic component creation.
 """
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
-from src.optimization.search_strategies.random_search import RandomSearchOptimizer
-
 from src.data.tabular_data import TabularDataLoader
-
 from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
-from sklearn.svm import SVC
 
 
 class ComponentFactory:
@@ -24,14 +20,12 @@ class ComponentFactory:
         self.components = {
             "optimizer": {
                 "grid_search": GridSearchOptimizer,
-                "random_search": RandomSearchOptimizer,
             },
             "data_loader": {
                 "tabular_data": TabularDataLoader,
             },
             "model": {
                 "random_forest_classifier": CustomRandomForestClassifier,
-                "support_vector_classifier": SVC,
             },
         }
 

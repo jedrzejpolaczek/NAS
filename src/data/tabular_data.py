@@ -34,18 +34,19 @@ Usage Example:
     print(f"X_val shape: {X_val.shape}")
     print(f"X_test shape: {X_test.shape}")
 """
+import os
 import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
 
-from src.data.templates.template_data_loader import DataLoader
+from src.data.templates.template_data_loader import BaseDataLoader
 
 
-class TabularDataLoader(DataLoader):
+class TabularDataLoader(BaseDataLoader):
     """
     Data loader for tabular datasets, such as the Iris dataset.
 
-    This class inherits from the `DataLoader` abstract base class and 
+    This class inherits from the `BaseDataLoader` abstract base class and 
     implements the methods for loading and preprocessing tabular data.
 
     Attributes:
@@ -57,38 +58,68 @@ class TabularDataLoader(DataLoader):
             features (X) and labels (y).
 
     Methods:
-        load_data(dataset_name):
+        download_data():
+            Downloads specified dataset and saves it to a CSV file.    
+        load_data():
             Loads a tabular dataset based on the given dataset name.
         preprocess_data():
             Preprocesses the loaded tabular data (e.g., normalization).
     """
+    def download_data(self) -> None:
+        """
+        Downloads specified dataset and saves it to a CSV file.
 
-    def load_data(self, dataset_name):
+        This function currently supports only the Iris dataset.
+
+        Raises:
+            ValueError:
+                If the specified dataset is not supported.
+
+        Returns:
+            None
+        """
+        file_path = os.path.join(self.config["path"], self.config["file_name"])
+
+        if os.path.isfile(file_path):
+            if self.config["dataset_name"].lower() == "iris":
+                iris = load_iris()
+                
+                # Create a DataFrame from the dataset for easier manipulation
+                iris_df = pd.DataFrame(data= iris.data, columns= iris.feature_names)
+
+                # Also add the target variable to the DataFrame
+                iris_df["target"] = iris.target
+
+                # Save the dataset to a CSV file
+                iris_df.to_csv(self.config["file_name"], index=False)
+            else:
+                raise ValueError(f"Dataset {self.config["dataset_name"]} is not supported.")
+
+    def load_data(self) -> None:
         """
         Loads a tabular dataset based on the dataset name.
 
         This implementation currently supports loading the Iris dataset
         and can be extended to load other datasets.
-
-        Args:
-            dataset_name (str):
-                The name of the dataset to load.
         """
-        if dataset_name.lower() == "iris":
-            iris = load_iris()
-            x = pd.DataFrame(iris.data, columns=iris.feature_names)
-            y = pd.Series(iris.target, name="species")
+        if self.config["dataset_name"].lower() == "iris":
+            self.data = pd.read_csv('iris_dataset.csv')
         else:
-            raise ValueError(f"Dataset {dataset_name} is not supported.")
+            raise ValueError(f"Dataset {self.config["dataset_name"]} is not supported.")
 
-        self.data = {"x": x, "y": y}
-
-    def preprocess_data(self):
+    def preprocess_data(self) -> None:
         """
         Preprocesses the loaded tabular data.
 
         This implementation standardizes the features by removing the mean
         and scaling to unit variance.
+
+        Raises:
+            ValueError:
+                If no data has been loaded.
+
+        Returns:
+            None
         """
         if self.data is None:
             raise ValueError(
@@ -100,6 +131,3 @@ class TabularDataLoader(DataLoader):
             scaler.fit_transform(self.data["x"]), 
             columns=self.data["x"].columns
         )
-
-    def get_data(self):
-        return self.data

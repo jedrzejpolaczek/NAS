@@ -24,14 +24,21 @@ Usage Example:
     # Initialize the custom loader with a configuration dictionary
     config = {"test_size": 0.2, "validation_size": 0.2}
     loader = CustomDataLoader(config)
+
+    # Option 1
     data = loader.load_data("dataset_name")
     loader.preprocess_data()
-    X_train, X_val, X_test, y_train, y_val, y_test = loader.split_data(data)
+    x_train, x_val, x_test, y_train, y_val, y_test = loader.split_data(data)
+
+    # Option 2
+    x_train, x_val, x_test, y_train, y_val, y_test loader.get_data_sets()
+
 """
+from src.main import nas_logger
 from sklearn.model_selection import train_test_split
 
 
-class DataLoader:
+class BaseDataLoader:
     """
     Base class for loading and preprocessing datasets.
 
@@ -48,15 +55,26 @@ class DataLoader:
             features (X) and labels (y).
 
     Methods:
-        load_data(dataset_name):
-            Abstract method for loading dataset based on 
-            the given dataset name. Must be implemented in the subclass.
+        download_data():
+            Abstract method for downloading dataset. 
+            Must be implemented in the subclass.
+        load_data():
+            Abstract method for loading dataset. 
+            Must be implemented in the subclass.
         preprocess_data():
             Abstract method for preprocessing the loaded data. 
             Must be implemented in the subclass.
+        data_pipeline():
+            Executes the complete data pipeline which includes 
+            downloading, loading and preprocessing the data.
+        get_data():
+            Retrieves the currently loaded and preprocessed data.
         split_data(data):
-            Splits the data into training, validation, and test 
-            sets based on the configuration provided.
+            Splits the preprocessed data into training, validation, 
+            and test sets based on the configuration provided.
+        get_data_sets():
+            Executes the data pipeline and
+            returns the resulting split datasets.
     """
     def __init__(self, config: dict) -> None:
         """
@@ -69,7 +87,50 @@ class DataLoader:
         """
         self.config = config
         self.data = None
+        self.logger = nas_logger
+    
+    def download_data(self) -> None:
+        """
+        Downloads specified dataset and saves it.
+        """
+        raise NotImplementedError("Subclasses should implement this method.")
 
+    def load_data(self) -> None:
+        """
+        Loads data based on the dataset name.
+
+        This method should be overridden by subclasses to handle the 
+        specific logic required to load different types of datasets.
+        """
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def preprocess_data(self) -> None:
+        """
+        Preprocesses the loaded data.
+
+        This method should be overridden by subclasses to handle the 
+        specific preprocessing steps required for different types of datasets.
+        """
+        raise NotImplementedError("Subclasses should implement this method.")
+
+    def data_pipeline(self) -> None:
+        """
+        Executes the data pipeline which includes downloading,
+        loading and preprocessing the data.
+
+        This method calls the methods `download_data`,
+        `load_data` and `preprocess_data` 
+        in that order, which manage the complete data pipeline.
+
+        Returns:
+            None
+        """
+        self.logger.info("Starting data pipeline...")
+        self.download_data()
+        self.load_data()
+        self.preprocess_data()
+        self.logger.info("Data pipeline completed.")
+        
     def get_data(self) -> dict:
         """
         Retrieves the currently loaded data.
@@ -83,31 +144,13 @@ class DataLoader:
                 A dictionary containing the loaded features and labels, with
                 keys like 'x' for features and 'y' for labels.
         """
+        self.logger.debug("Retrieving data: %s", self.data)
         return self.data
 
-    def load_data(self, dataset_name: str) -> None:
-        """
-        Loads data based on the dataset name.
-
-        This method should be overridden by subclasses to handle the 
-        specific logic required to load different types of datasets.
-
-        Args:
-            dataset_name (str):
-                The name of the dataset to load.
-        """
-        raise NotImplementedError("Subclasses should implement this method.")
-
-    def preprocess_data(self) -> None:
-        """
-        Preprocesses the loaded data.
-
-        This method should be overridden by subclasses to handle the 
-        specific preprocessing steps required for different types of datasets.
-        """
-        raise NotImplementedError("Subclasses should implement this method.")
-
-    def split_data(self, data: dict) -> tuple:
+    def split_data(
+        self,
+        data: dict
+    ) -> tuple:
         """
         Splits the data into training, validation, and test sets.
 
@@ -125,6 +168,7 @@ class DataLoader:
                 sets for features and labels respectively: 
                 (x_train, x_val, x_test, y_train, y_val, y_test).
         """
+        self.logger.info("Splitting data...")
         test_size = self.config.get("test_size", 0.2)
         validation_size = self.config.get("validation_size", 0.2)
 
@@ -143,4 +187,30 @@ class DataLoader:
             test_size=test_size / (test_size + validation_size)
         )
 
+        self.logger.info("Data split into training, validation, and test sets.")
+        self.logger.debug("X train dataset: %s", x_train)
+        self.logger.debug("X validation dataset: %s", x_val)
+        self.logger.debug("X test dataset: %s", x_test)
+        self.logger.debug("Y train dataset: %s", y_train)
+        self.logger.debug("Y validation dataset: %s", y_val)
+        self.logger.debug("Y test dataset: %s", y_test)
         return x_train, x_val, x_test, y_train, y_val, y_test
+    
+    def get_data_sets(self) -> dict:
+        """
+        Executes the data pipeline and
+        returns the resulting split datasets.
+
+        This method first calls the `data_pipeline`
+        method to manage downloading,
+        loading, and preprocessing the data.
+        Then, it splits the preprocessed data into
+        training, validation, and test sets by calling `split_data`.
+
+        Returns:
+            dict:
+                A dictionary containing the
+                training, validation, and test datasets.
+        """
+        self.data_pipeline()
+        return self.split_data(self.data)

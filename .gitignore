@@ -12,6 +12,8 @@
 wip_*
 *_venv
 venv_*
+data/*
+logs
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -17,7 +17,7 @@
             },
             "dataset": {
                 "name": "tabular_data",
-                "path": "data/processed/tabular_data",
+                "path": "data/raw/tabular_data",
                 "file_name": "iris_dataset.csv",
                 "dataset_name": "iris",
                 "config": {

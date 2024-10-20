@@ -78,22 +78,30 @@ class TabularDataLoader(BaseDataLoader):
         Returns:
             None
         """
-        file_path = os.path.join(self.config["path"], self.config["file_name"])
+        self._create_directory()
 
-        if os.path.isfile(file_path):
-            if self.config["dataset_name"].lower() == "iris":
-                iris = load_iris()
-                
-                # Create a DataFrame from the dataset for easier manipulation
-                iris_df = pd.DataFrame(data= iris.data, columns= iris.feature_names)
+        if self.config["dataset_name"].lower() == "iris":
+            iris = load_iris()
 
-                # Also add the target variable to the DataFrame
-                iris_df["target"] = iris.target
+            # Create a DataFrame from the dataset for easier manipulation
+            iris_df = pd.DataFrame(
+                            data= iris.data,
+                            columns= iris.feature_names
+                        )
 
-                # Save the dataset to a CSV file
-                iris_df.to_csv(self.config["file_name"], index=False)
-            else:
-                raise ValueError(f"Dataset {self.config["dataset_name"]} is not supported.")
+            # Also add the target variable to the DataFrame
+            iris_df["target"] = iris.target
+
+            # Save the dataset to a CSV file
+            iris_df.to_csv(self.file_path, index=False)
+
+        elif self.config.get("dataset_name") is None:
+            error_msg = "Missing dataset name in configuration file."
+            raise ValueError(error_msg)
+
+        else:
+            dataset_name = self.config.get("dataset_name")
+            raise ValueError(f"Dataset {dataset_name} is not supported.")
 
     def load_data(self) -> None:
         """
@@ -102,32 +110,73 @@ class TabularDataLoader(BaseDataLoader):
         This implementation currently supports loading the Iris dataset
         and can be extended to load other datasets.
         """
-        if self.config["dataset_name"].lower() == "iris":
-            self.data = pd.read_csv('iris_dataset.csv')
+        if self.config.get("dataset_name").lower() == "iris":
+            self.data = pd.read_csv(self.file_path)
+
+        elif self.config.get("dataset_name") is None:
+            error_msg = "Missing dataset name in configuration file."
+            raise ValueError(error_msg)
+
         else:
-            raise ValueError(f"Dataset {self.config["dataset_name"]} is not supported.")
+            dataset_name = self.config.get("dataset_name")
+            raise ValueError(f"Dataset {dataset_name} is not supported.")
 
     def preprocess_data(self) -> None:
         """
-        Preprocesses the loaded tabular data.
-
-        This implementation standardizes the features by removing the mean
-        and scaling to unit variance.
+        Preprocesses loaded data for further analysis.
 
         Raises:
             ValueError:
-                If no data has been loaded.
+                If no data is loaded or the data structure is unsupported.
 
-        Returns:
+        Return:
             None
         """
+
         if self.data is None:
             raise ValueError(
                 "No data loaded. Please load data before preprocessing."
             )
 
-        scaler = StandardScaler()
-        self.data["x"] = pd.DataFrame(
-            scaler.fit_transform(self.data["x"]), 
-            columns=self.data["x"].columns
-        )
+        if not isinstance(self.data, pd.DataFrame):
+            raise ValueError(
+                "Unsupported data structure for preprocessing. \
+                    Only DataFrames are supported."
+            )
+
+        # Separate features and target in one line
+        x, y = self.data.drop("target", axis=1), self.data["target"]
+
+        # Impute missing values and convert to numeric in one step
+        x = x.apply(pd.to_numeric, errors="coerce").ffill()
+
+        # Standardize features with fit_transform for efficiency
+        scaler = StandardScaler().fit_transform(x)
+
+        # Update data directly, avoiding unnecessary dictionary creation
+        self.data = {"X": scaler, "y": y}
+
+    def _create_directory(self) -> None:
+        """
+        Creates a directory at the specified path.
+        If the directory already exists, it does nothing.
+        If there are any subdirectories in the path, it creates them as well.
+
+        Raises:
+            FileExistsError:
+                Path alread exist.
+
+        Returns:
+            None
+        """
+        dataset_path = self.config["path"]
+
+        try:
+            os.makedirs(dataset_path)
+            self.logger.debug(
+                f"Directory '{dataset_path}' was created successfully."
+            )
+        except FileExistsError:
+            self.logger.warning(
+                f"Directory '{dataset_path}' already exists."
+            )

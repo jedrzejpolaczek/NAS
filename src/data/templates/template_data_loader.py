@@ -34,7 +34,7 @@ Usage Example:
     x_train, x_val, x_test, y_train, y_val, y_test loader.get_data_sets()
 
 """
-from src.main import nas_logger
+import os
 from sklearn.model_selection import train_test_split
 
 
@@ -76,7 +76,7 @@ class BaseDataLoader:
             Executes the data pipeline and
             returns the resulting split datasets.
     """
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config: dict, logger) -> None:
         """
         Initializes the DataLoader with a configuration dictionary.
 
@@ -84,11 +84,14 @@ class BaseDataLoader:
             config (dict):
                 Configuration dictionary containing parameters for
                 data loading, preprocessing, and splitting.
+            logger (WIP):
+                WIP
         """
         self.config = config
+        self.file_path = os.path.join(self.config["path"], self.config["file_name"])
         self.data = None
-        self.logger = nas_logger
-    
+        self.logger = logger
+
     def download_data(self) -> None:
         """
         Downloads specified dataset and saves it.
@@ -130,7 +133,7 @@ class BaseDataLoader:
         self.load_data()
         self.preprocess_data()
         self.logger.info("Data pipeline completed.")
-        
+
     def get_data(self) -> dict:
         """
         Retrieves the currently loaded data.
@@ -175,7 +178,7 @@ class BaseDataLoader:
         # Split into training and a temporary set
         # (which will be further split into validation and test sets)
         x_train, x_temp, y_train, y_temp = train_test_split(
-            data["x"],
+            data["X"],
             data["y"],
             test_size=(test_size + validation_size)
         )

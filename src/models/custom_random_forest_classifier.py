@@ -50,7 +50,7 @@ class CustomRandomForestClassifier(ClassificationModel):
         config: dict
     ) -> None:
         super().__init__(config)
-        self.model = RandomForestClassifier(**self.config)
+        self.model = RandomForestClassifier(**self.config["config"])
 
     def fit(
         self,
@@ -128,3 +128,13 @@ class CustomRandomForestClassifier(ClassificationModel):
             "recall": recall_score(y, y_pred),  
             "f1_score": f1_score(y, y_pred),  
         }
+
+    def get_model(self) -> RandomForestClassifier:
+        """
+        Returns the underlying RandomForestClassifier instance.
+
+        Returns:
+            RandomForestClassifier:
+                    The RandomForestClassifier model.
+        """
+        return self.model

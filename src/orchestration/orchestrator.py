@@ -96,8 +96,8 @@ class Orchestrator:
         model_name = experiment_config["model"]["name"]
 
         # Load and pre-process data
-        data = data_loader.load_data(dataset_name)
-        data_loader.preprocess_data()
+        data_loader.data_pipeline(dataset_name)
+        data = data_loader.get_data()
 
         # Split data (can be done within data loader or here)
         x_train, x_val, x_test, y_train, y_val, y_test = data_loader.split_data(data)

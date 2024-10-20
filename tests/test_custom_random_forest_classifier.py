@@ -6,7 +6,7 @@ from src.models.custom_random_forest_classifier import CustomRandomForestClassif
 
 @pytest.fixture
 def config():
-  return {"n_estimators": 100, "max_depth": 5}
+  return {"config":{"n_estimators": 100, "max_depth": 5}}
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")

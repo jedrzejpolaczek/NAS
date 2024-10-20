@@ -4,7 +4,7 @@ Module for defining an abstract base class for search optimization.
 import pandas as pd
 from abc import ABC, abstractmethod
 
-from src.models.template_base_model import BaseModel
+from src.models.templates.template_base_model import BaseModel
 
 
 class BaseSearch(ABC):

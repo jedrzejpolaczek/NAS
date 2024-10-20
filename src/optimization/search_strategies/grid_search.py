@@ -16,12 +16,6 @@ class GridSearchOptimizer(BaseSearch):
         config (dict):
             Configuration for the Grid Search.
     """
-    def __init__(
-        self,
-        config: dict
-    ) -> None:
-        self.config = config
-
     def optimize(
         self,
         model: BaseModel,

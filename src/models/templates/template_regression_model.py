@@ -11,7 +11,7 @@ Classes:
         Base class for regression models.
         Inherits from `BaseModel`.
 """
-from src.models.template_base_model import BaseModel
+from src.models.templates.template_base_model import BaseModel
 
 
 class RegressionModel(BaseModel):

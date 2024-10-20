@@ -19,7 +19,7 @@ from abc import abstractmethod
 import pandas as pd
 import numpy as np
 
-from src.models.template_base_model import BaseModel
+from src.models.templates.template_base_model import BaseModel
 
 
 class ClassificationModel(BaseModel):

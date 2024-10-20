@@ -9,7 +9,8 @@ and evaluating the model, using the Random Forest algorithm.
 
 Classes:
     - CustomRandomForestClassifier:
-        Inherits from `ClassificationModel` and provides a specific implementation 
+        Inherits from `ClassificationModel` and
+        provides a specific implementation 
         for the Random Forest algorithm.
 
 Methods:
@@ -39,7 +40,8 @@ class CustomRandomForestClassifier(ClassificationModel):
     """
     Custom Random Forest classifier model.
 
-    Inherits from the `ClassificationModel` base class and provides a specific implementation
+    Inherits from the `ClassificationModel` base class and
+    provides a specific implementation
     for the Random Forest algorithm.
     """
 

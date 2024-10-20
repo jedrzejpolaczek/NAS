@@ -1,6 +1,5 @@
 # Import libraries
 import os
-import numpy as np
 import pytest
 from unittest.mock import Mock
 
@@ -11,12 +10,15 @@ mock_logger = Mock()
 
 
 class TestBaseDataLoader:
-
+    """Test class for BaseDataLoader"""
     def test_init_with_config(self):
         config = {"path": "data", "file_name": "data.csv"}
         loader = BaseDataLoader(config, mock_logger)
         assert loader.config == config
-        assert loader.file_path == os.path.join(config["path"], config["file_name"])
+        assert loader.file_path == os.path.join(
+            config["path"],
+            config["file_name"]
+        )
         assert loader.data is None
 
     def test_init_without_logger(self):

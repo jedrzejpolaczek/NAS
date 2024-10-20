@@ -74,13 +74,21 @@ class TabularDataLoader(BaseDataLoader):
         Raises:
             ValueError:
                 If the specified dataset is not supported.
+            AttributeError:
+                If there is no dataset name.
 
         Returns:
             None
         """
         self._create_directory()
+        dataset_name = self.config.get("dataset_name")
 
-        if self.config["dataset_name"].lower() == "iris":
+        if dataset_name is None:
+            raise AttributeError(
+                "Missing dataset name in configuration file."
+            )
+
+        elif dataset_name.lower() == "iris":
             iris = load_iris()
 
             # Create a DataFrame from the dataset for easier manipulation
@@ -95,12 +103,7 @@ class TabularDataLoader(BaseDataLoader):
             # Save the dataset to a CSV file
             iris_df.to_csv(self.file_path, index=False)
 
-        elif self.config.get("dataset_name") is None:
-            error_msg = "Missing dataset name in configuration file."
-            raise ValueError(error_msg)
-
         else:
-            dataset_name = self.config.get("dataset_name")
             raise ValueError(f"Dataset {dataset_name} is not supported.")
 
     def load_data(self) -> None:
@@ -109,16 +112,27 @@ class TabularDataLoader(BaseDataLoader):
 
         This implementation currently supports loading the Iris dataset
         and can be extended to load other datasets.
+
+        Raises:
+            ValueError:
+                If the specified dataset is not supported.
+            AttributeError:
+                If there is no dataset name.
+
+        Returns:
+            None
         """
-        if self.config.get("dataset_name").lower() == "iris":
+        dataset_name = self.config.get("dataset_name")
+
+        if dataset_name is None:
+            raise AttributeError(
+                "Missing dataset name in configuration file."
+            )
+
+        elif dataset_name.lower() == "iris":
             self.data = pd.read_csv(self.file_path)
 
-        elif self.config.get("dataset_name") is None:
-            error_msg = "Missing dataset name in configuration file."
-            raise ValueError(error_msg)
-
         else:
-            dataset_name = self.config.get("dataset_name")
             raise ValueError(f"Dataset {dataset_name} is not supported.")
 
     def preprocess_data(self) -> None:

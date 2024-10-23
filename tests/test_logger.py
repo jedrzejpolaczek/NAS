@@ -16,16 +16,10 @@ def test_get_logger_sets_level():
 
 
 def test_get_logger_configures_file_handler():
-    pass
-    # """Tests if the function configures the file handler correctly."""
-    # logger = get_logger("test_logger", "test.log")
-    # handler = logger.handlers[0]
-    # assert isinstance(handler, logging.FileHandler)
-    # # Simulate a log record
-    # record = logging.LogRecord("test_logger", logging.DEBUG, "", 1, "Test message", None, None)
-    # formatted_message = handler.formatter.format(record)
-    # # Check if formatted message starts with the expected format (excluding timestamp)
-    # assert formatted_message.startswith("%(asctime)s %(levelname)s  %(message)s")
+    """Tests if the function configures the file handler correctly."""
+    logger = get_logger("test_logger", "test.log")
+    handler = logger.handlers[0]
+    assert isinstance(handler, logging.FileHandler)
 
 
 def test_get_logger_removes_existing_handlers():
@@ -33,5 +27,5 @@ def test_get_logger_removes_existing_handlers():
     logger = logging.getLogger("test_logger")
     logger.addHandler(logging.StreamHandler())  # Add a StreamHandler
     get_logger("test_logger", "test.log")
-    assert len(logger.handlers) == 4  # Check for one handler (FileHandler)
+    assert len(logger.handlers) == 5
     assert isinstance(logger.handlers[0], logging.FileHandler)

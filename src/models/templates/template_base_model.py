@@ -20,7 +20,8 @@ Methods:
     - evaluate(self, X: pd.DataFrame, y: pd.Series) -> dict:
         Abstract method for evaluating the model.
 """
-from abc import ABC, abstractmethod
+from abc import (ABC, abstractmethod)
+import logging
 import pandas as pd
 import numpy as np
 
@@ -41,7 +42,8 @@ class BaseModel(ABC):
 
     def __init__(
         self,
-        config: dict
+        config: dict,
+        logger: logging.Logger
     ) -> None:
         """
         Initializes the BaseModel with a configuration dictionary.
@@ -49,23 +51,26 @@ class BaseModel(ABC):
         Args:
             config (dict):
                 Configuration dictionary for the model.
+            logger (logging.Logger):
+                An instance of the logger object shared in whole project.
         """
         self.config = config
+        self.logger = logger
 
     @abstractmethod
     def fit(
         self,
-        X: pd.DataFrame,
-        y: pd.Series
+        input_features: pd.DataFrame,
+        target_labels: pd.Series
     ) -> None:
         """
         Trains the model on the given data.
 
         Args:
-            X (pd.DataFrame):
-                Input features.
-            y (pd.Series):
-                Target labels.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
+            target_labels (pd.Series):
+                Target labels. Commonly marked as y.
         """
         raise NotImplementedError(
             "Subclasses must implement the fit method."
@@ -74,14 +79,14 @@ class BaseModel(ABC):
     @abstractmethod
     def predict(
         self,
-        X: pd.DataFrame
+        input_features: pd.DataFrame
     ) -> np.ndarray:
         """
         Makes predictions on new data.
 
         Args:
-            X (pd.DataFrame):
-                Input features.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
 
         Returns:
             np.ndarray:
@@ -94,17 +99,17 @@ class BaseModel(ABC):
     @abstractmethod
     def evaluate(
         self,
-        X: pd.DataFrame,
-        y: pd.Series
+        input_features: pd.DataFrame,
+        target_labels: pd.Series
     ) -> dict:
         """
         Evaluates the model's performance on the given data.
 
         Args:
-            X (pd.DataFrame):
-                Input features.
-            y (pd.Series):
-                True labels.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
+            target_labels (pd.Series):
+                Target labels. Commonly marked as y.
 
         Returns:
             dict:

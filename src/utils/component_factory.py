@@ -6,6 +6,8 @@ experiment components, including optimizers, data loaders, and models. It
 uses a dictionary structure to map component types to their corresponding
 classes, allowing for flexible and dynamic component creation.
 """
+import logging
+
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.data.tabular_data import TabularDataLoader
 from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
@@ -33,7 +35,8 @@ class ComponentFactory:
         self,
         component_type: str,
         component_name: str,
-        component_config: dict
+        component_config: dict,
+        logger: logging.Logger
     ) -> object:
         """
         Creates an instance of the specified component
@@ -47,6 +50,8 @@ class ComponentFactory:
                 Name of the specific component within the type.
             component_config (dict):
                 Configuration dictionary for the component.
+            logger (logging.Logger):
+                An instance of the logger object shared in whole project.
 
         Returns:
             object:
@@ -65,4 +70,4 @@ class ComponentFactory:
         if component_class is None:
             raise ValueError(f"Unknown {component_type}: {component_name}")
 
-        return component_class(component_config)
+        return component_class(component_config, logger)

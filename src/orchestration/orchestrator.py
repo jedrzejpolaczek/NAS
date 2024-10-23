@@ -7,6 +7,9 @@ like `ComponentFactory`, `ResultAggregator`, and `ExperimentTracker`
 to manage data loading, preprocessing, model training,
 optimization, and result aggregation.
 """
+import os
+
+from src.utils.logger import get_logger
 from src.utils.component_factory import ComponentFactory
 from src.experiment_management.experiment_tracker import ExperimentTracker
 
@@ -42,6 +45,7 @@ class Orchestrator:
         self.config = config
         self.component_factory = ComponentFactory()
         self.experiment_tracker = ExperimentTracker(config["log_dir"])
+        self.logger = get_logger("NAS logger", os.path.join(config["log_dir"], "log.txt"))
 
     def get_component(
         self,
@@ -64,9 +68,10 @@ class Orchestrator:
         return self.component_factory.create_component(
             component_type=component_type,
             component_name=component_config["name"],
-            component_config=component_config["config"]
+            component_config=component_config,
+            logger=self.logger
         )
-    
+
     def run_experiment(
         self,
         experiment_config: dict
@@ -86,29 +91,56 @@ class Orchestrator:
                 If the optimizer name is not recognized.
         """
         # Select the optimizer, data loader and model using factory
-        optimizer = self.get_component("optimizer", experiment_config["optimizer"])
-        data_loader = self.get_component("data_loader", experiment_config["dataset"])
-        model = self.get_component("model", experiment_config["model"])
+        optimizer = self.get_component(
+            component_type="optimizer",
+            component_config=experiment_config["optimizer"]
+        )
+        data_loader = self.get_component(
+            component_type="data_loader",
+            component_config=experiment_config["dataset"]
+        )
+        model = self.get_component(
+            component_type="model",
+            component_config=experiment_config["model"]
+        )
 
         # Extract experiment details (avoid redundant variable assignments)
         optimizer_name = experiment_config["optimizer"]["name"]
-        dataset_name = experiment_config["dataset"]["name"]
+        dataset_name = experiment_config["dataset"]["name"] + \
+            " (" + experiment_config["dataset"]["dataset_name"] + ")"
         model_name = experiment_config["model"]["name"]
 
         # Load and pre-process data
-        data_loader.data_pipeline(dataset_name)
+        data_loader.data_pipeline()
         data = data_loader.get_data()
 
         # Split data (can be done within data loader or here)
-        x_train, x_val, x_test, y_train, y_val, y_test = data_loader.split_data(data)
+        (
+            input_features_for_train,
+            _,  # input_features_for_validation
+            input_features_for_test,
+            target_labels_for_train,
+            _,  # target_labels_for_validation
+            target_labels_for_test
+        ) = data_loader.split_data(data)
 
         # Optimize the model
-        best_params, best_score = optimizer.optimize(model, x_train, y_train)
-        model.set_params(**best_params)
-        model.fit(x_train, y_train)
+        best_params, best_score = optimizer.optimize(
+            model.model,
+            input_features_for_train,
+            target_labels_for_train
+        )
+        model.model.set_params(**best_params)
+        model.model.fit(
+            input_features_for_train,
+            target_labels_for_train
+        )
 
         # Evaluate the model
-        metrics = model.evaluate(x_test, y_test)
+        metrics = model.evaluate(
+            input_features_for_test,
+            target_labels_for_test
+        )
 
         # Log the experiment
         experiment_data = {

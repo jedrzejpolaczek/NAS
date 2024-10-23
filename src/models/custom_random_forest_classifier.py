@@ -23,6 +23,7 @@ Methods:
     - evaluate(self, X: pd.DataFrame, y: pd.Series) -> dict:
         Evaluate the model's performance.
 """
+import logging
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -47,94 +48,110 @@ class CustomRandomForestClassifier(ClassificationModel):
 
     def __init__(
         self,
-        config: dict
+        config: dict,
+        logger: logging.Logger
     ) -> None:
-        super().__init__(config)
+        """
+        Initializes the CustomRandomForestClassifier with a configuration dictionary.
+
+        Args:
+            config (dict):
+                Configuration dictionary for the model.
+            logger (logging.Logger):
+                An instance of the logger object shared in whole project.
+        """
+        super().__init__(config, logger)
         self.model = RandomForestClassifier(**self.config["config"])
 
     def fit(
         self,
-        X: pd.DataFrame,
-        y: pd.Series
+        input_features: pd.DataFrame,
+        target_labels: pd.Series
     ) -> None:
         """
-        Fit the model to the training data.
+        Trains the model on the given data.
 
         Args:
-            X (pd.DataFrame):
-                Training input samples.
-            y (pd.DataFrame):
-                Target values.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
+            target_labels (pd.Series):
+                Target labels. Commonly marked as y.
         """
-        self.model.fit(X, y)
+        self.model.fit(input_features, target_labels)
 
     def predict(
         self,
-        X: pd.DataFrame
+        input_features: pd.DataFrame
     ) -> np.ndarray:
         """
-        Predict the class labels for the provided data.
+        Makes predictions on new data.
 
         Args:
-            X (pd.DataFrame)
-                Test input samples.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
 
         Returns:
             np.ndarray:
                 Predicted class label per sample.
         """
-        return self.model.predict(X)
+        return self.model.predict(input_features)
 
     def predict_proba(
         self,
-        X: pd.DataFrame
+        input_features: pd.DataFrame
     ) -> np.ndarray:
         """
         Return probability estimates for the test data.
 
         Args:
-            X (pd.DataFrame):
-                Test input samples.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
 
         Returns:
             np.ndarray
                 Returns the probability of the sample
                 for each class in the model.
         """
-        return self.model.predict_proba(X)
+        return self.model.predict_proba(input_features)
 
     def  evaluate(
         self,
-        X: pd.DataFrame,
-        y: pd.Series
+        input_features: pd.DataFrame,
+        target_labels: pd.Series
     ) -> dict:
         """
-        Evaluate the model's performance.
+        Evaluates the model's performance on the given data.
 
         Args:
-            X (pd.DataFrame):
-                Test input samples.
-            y (pd.Series):
-                True labels for test set.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
+            target_labels (pd.Series):
+                Target labels. Commonly marked as y.
 
         Returns:
             dict:
                 Returns a dictionary containing metric scores.
         """
-        y_pred = self.model.predict(X)
+        target_labels_prediction = self.model.predict(input_features)
         return {
-            "accuracy": accuracy_score(y, y_pred),
-            "precision": precision_score(y, y_pred),
-            "recall": recall_score(y, y_pred),  
-            "f1_score": f1_score(y, y_pred),  
+            "accuracy": accuracy_score(
+                target_labels,
+                target_labels_prediction
+            ),
+            "precision": precision_score(
+                target_labels,
+                target_labels_prediction,
+                average=self.config["evaluation"]["average"]
+            ),
+            "recall": recall_score(
+                target_labels,
+                target_labels_prediction,
+                average=self.config["evaluation"]["average"]
+            ),
+            "f1_score": f1_score(
+                target_labels,
+                target_labels_prediction,
+                average=self.config["evaluation"]["average"]
+            ),
         }
 
-    def get_model(self) -> RandomForestClassifier:
-        """
-        Returns the underlying RandomForestClassifier instance.
-
-        Returns:
-            RandomForestClassifier:
-                    The RandomForestClassifier model.
-        """
-        return self.model

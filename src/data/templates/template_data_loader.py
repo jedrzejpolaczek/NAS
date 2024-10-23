@@ -35,6 +35,7 @@ Usage Example:
 
 """
 import os
+import logging
 from sklearn.model_selection import train_test_split
 
 
@@ -76,7 +77,11 @@ class BaseDataLoader:
             Executes the data pipeline and
             returns the resulting split datasets.
     """
-    def __init__(self, config: dict, logger) -> None:
+    def __init__(
+        self,
+        config: dict,
+        logger: logging.Logger
+    ) -> None:
         """
         Initializes the DataLoader with a configuration dictionary.
 
@@ -84,11 +89,14 @@ class BaseDataLoader:
             config (dict):
                 Configuration dictionary containing parameters for
                 data loading, preprocessing, and splitting.
-            logger (WIP):
-                WIP
+            logger (logging.Logger):
+                An instance of the logger object shared in whole project.
         """
         self.config = config
-        self.file_path = os.path.join(self.config["path"], self.config["file_name"])
+        self.file_path = os.path.join(
+            self.config["path"],
+            self.config["file_name"]
+        )
         self.data = None
         self.logger = logger
 

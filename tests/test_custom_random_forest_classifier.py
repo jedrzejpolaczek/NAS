@@ -1,12 +1,25 @@
 import pytest
+from unittest.mock import Mock
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification
 from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
 
+
+mock_logger = Mock()
+
+
 @pytest.fixture
 def config():
-  return {"config":{"n_estimators": 100, "max_depth": 5}}
+    return {
+        "config":{
+            "n_estimators": 100,
+            "max_depth": 5
+        },
+        "evaluation": {
+            "average": "micro"
+        }
+    }
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
@@ -15,7 +28,7 @@ def test_fit_predict(config):
     X, y = make_classification(n_samples=100, n_features=10, random_state=42)
 
     # Create a CustomRandomForestClassifier instance
-    model = CustomRandomForestClassifier(config)
+    model = CustomRandomForestClassifier(config, mock_logger)
 
     # Fit the model
     model.fit(pd.DataFrame(X), pd.Series(y))
@@ -33,7 +46,7 @@ def test_predict_proba(config):
     X, y = make_classification(n_samples=100, n_features=10, random_state=42)
 
     # Create a CustomRandomForestClassifier instance
-    model = CustomRandomForestClassifier(config)
+    model = CustomRandomForestClassifier(config, mock_logger)
 
     # Fit the model
     model.fit(pd.DataFrame(X), pd.Series(y))
@@ -51,7 +64,7 @@ def test_evaluate(config):
     X, y = make_classification(n_samples=100, n_features=10, random_state=42)
 
     # Create a CustomRandomForestClassifier instance
-    model = CustomRandomForestClassifier(config)
+    model = CustomRandomForestClassifier(config, mock_logger)
 
     # Fit the model
     model.fit(pd.DataFrame(X), pd.Series(y))

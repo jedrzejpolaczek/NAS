@@ -31,13 +31,16 @@ class ClassificationModel(BaseModel):
     """
 
     @abstractmethod
-    def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
+    def predict_proba(
+        self,
+        input_features: pd.DataFrame
+    ) -> np.ndarray:
         """
         Predicts class probabilities for new data.
 
         Args:
-            X (pd.DataFrame):
-                Input features.
+            input_features (pd.DataFrame):
+                Input features. Commonly marked as X.
 
         Returns:
             np.ndarray:

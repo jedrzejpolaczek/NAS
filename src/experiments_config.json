@@ -1,6 +1,6 @@
 {
     "data_path": "data/example_dataset.csv",
-    "log_dir": "logs/",
+    "log_dir": "logs",
     "test_size": 0.2,
     "experiments": [
         {
@@ -29,6 +29,9 @@
                 "name": "random_forest_classifier",
                 "config": {
                     "n_estimators": 100
+                },
+                "evaluation": {
+                    "average": "micro"
                 }
             }
         }

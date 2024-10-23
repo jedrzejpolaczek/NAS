@@ -19,8 +19,8 @@ class GridSearchOptimizer(BaseSearch):
     def optimize(
         self,
         model: BaseModel,
-        X_train: pd.DataFrame,
-        y_train: pd.DataFrame
+        input_features_for_train: pd.DataFrame,
+        target_labels_for_train: pd.DataFrame
     ):
         """
         Perform Grid Search optimization on the model.
@@ -28,10 +28,10 @@ class GridSearchOptimizer(BaseSearch):
         Args:
             model (BaseModel):
                 The model to be optimized.
-            X_train (pd.DataFrame):
-                Training input samples.
-            y_train (pd.DataFrame):
-                Target values.
+            input_features_for_train (pd.DataFrame):
+                Training input features. Commonly marked as X.
+            target_labels_for_train (pd.DataFrame):
+                Target labels values. Commonly marked as y.
 
         Returns:
             tuple
@@ -44,6 +44,9 @@ class GridSearchOptimizer(BaseSearch):
             scoring=self.config["config"]["scoring"]
         )
 
-        grid_search.fit(X_train, y_train)
+        grid_search.fit(
+            input_features_for_train,
+            target_labels_for_train
+        )
 
         return grid_search.best_params_, grid_search.best_score_

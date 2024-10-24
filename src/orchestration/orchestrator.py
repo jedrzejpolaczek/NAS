@@ -1,16 +1,39 @@
-from src.data.template_data_loader import DataLoader
-from src.data.tabular_data import TabularDataLoader
+"""
+Orchestrator for managing experiment workflows.
 
-from src.models.model_factory import ModelFactory
-from src.optimization.search_strategies.grid_search import GridSearchOptimizer
-from src.optimization.search_strategies.random_search import RandomSearchOptimizer
-from src.evaluation.metrics import Metrics
-from src.evaluation.result_aggregator import ResultAggregator
+This module provides the `Orchestrator` class, which is responsible for
+orchestrating the entire experiment workflow. It utilizes various components
+like `ComponentFactory`, `ResultAggregator`, and `ExperimentTracker`
+to manage data loading, preprocessing, model training,
+optimization, and result aggregation.
+"""
+import os
+
+from src.utils.logger import get_logger
+from src.utils.component_factory import ComponentFactory
 from src.experiment_management.experiment_tracker import ExperimentTracker
 
 
 class Orchestrator:
-    def __init__(self, config):
+    """
+    Orchestrates the entire experiment workflow.
+
+    This class facilitates running machine learning experiments by managing
+    different stages and utilizing various components.
+
+    Attributes:
+        config (dict):
+            Configuration dictionary containing parameters for
+            data loading, preprocessing, model training, and optimization.
+        component_factory (ComponentFactory):
+            Factory for creating experiment components.
+        experiment_tracker (ExperimentTracker):
+            Tracker for logging experiment data.
+    """
+    def __init__(
+        self,
+        config: dict
+    ) -> None:
         """
         Initializes the Orchestrator with configuration and various components.
 
@@ -20,89 +43,117 @@ class Orchestrator:
                 data loading, preprocessing, model training, and optimization.
         """
         self.config = config
-        self.data_loader = DataLoader(config)
-        self.model_factory = ModelFactory()
-        self.optimizer = None  # TODO
-        self.result_aggregator = ResultAggregator()
-        self.experiment_tracker = ExperimentTracker(config)
+        self.component_factory = ComponentFactory()
+        self.experiment_tracker = ExperimentTracker(config["log_dir"])
+        self.logger = get_logger("NAS logger", os.path.join(config["log_dir"], "log.txt"))
 
-    def _select_loader(self, experiment_config: dict, dataset_name: str):
-        if dataset_name == "tabular_data":
-            self.data_loader = TabularDataLoader(experiment_config)
+    def get_component(
+        self,
+        component_type: str,
+        component_config: dict
+    ) -> object:
+        """
+        Get a component from the component factory.
 
-    def _select_optimizer(self, experiment_config: dict, optimizer_name: str):
-        if optimizer_name == "grid_search":
-            self.optimizer = GridSearchOptimizer(experiment_config)
-        elif optimizer_name == "random_search":
-            self.optimizer = RandomSearchOptimizer(experiment_config)
-        else:
-            raise ValueError(f"Unknown optimizer: {optimizer_name}")
+        Args:
+            component_type (str):
+                The type of the component to get.
+            component_config (dict):
+                The configuration of the component.
+
+        Returns:
+            object:
+                The component object created by the component factory.
+        """
+        return self.component_factory.create_component(
+            component_type=component_type,
+            component_name=component_config["name"],
+            component_config=component_config,
+            logger=self.logger
+        )
 
     def run_experiment(
         self,
-        experiment_config,
-        dataset_name,
-        model_name,
-        optimizer_name
-    ):
+        experiment_config: dict
+    ) -> None:
         """
-        Runs a single experiment including data loading,
-        preprocessing, model training, optimization, and evaluation.
+        Runs an experiment with the specified configuration.
+
+        This method orchestrates the entire experiment workflow, including
+        data loading, preprocessing, model training, optimization, and 
+        result aggregation.
 
         Args:
             experiment_config (dict):
-
-            dataset_name (str):
-                The name of the dataset to load.
-            model_name (str):
-                The name of the model to train.
-            optimizer_name (str):
-                The name of the optimization strategy to use.
-
+                Configuration dictionary for the experiment.
         Raises:
             ValueError:
                 If the optimizer name is not recognized.
         """
-        # Load and preprocess data
-        self._select_loader(experiment_config, dataset_name)
-        self.data_loader.load_data(dataset_name)
-        self.data_loader.preprocess_data()
-        preprocessed_data = self.data_loader.get_data()
-        x_train, x_val, x_test, y_train, y_val, y_test = \
-            self.data_loader.split_data(preprocessed_data)
+        # Select the optimizer, data loader and model using factory
+        optimizer = self.get_component(
+            component_type="optimizer",
+            component_config=experiment_config["optimizer"]
+        )
+        data_loader = self.get_component(
+            component_type="data_loader",
+            component_config=experiment_config["dataset"]
+        )
+        model = self.get_component(
+            component_type="model",
+            component_config=experiment_config["model"]
+        )
 
-        # Create and train the model
-        model = self.model_factory.create_model(model_name, {})
+        # Extract experiment details (avoid redundant variable assignments)
+        optimizer_name = experiment_config["optimizer"]["name"]
+        dataset_name = experiment_config["dataset"]["name"] + \
+            " (" + experiment_config["dataset"]["dataset_name"] + ")"
+        model_name = experiment_config["model"]["name"]
 
-        # Select the optimizer
-        self._select_optimizer(experiment_config, dataset_name)
+        # Load and pre-process data
+        data_loader.data_pipeline()
+        data = data_loader.get_data()
+
+        # Split data (can be done within data loader or here)
+        (
+            input_features_for_train,
+            _,  # input_features_for_validation
+            input_features_for_test,
+            target_labels_for_train,
+            _,  # target_labels_for_validation
+            target_labels_for_test
+        ) = data_loader.split_data(data)
 
         # Optimize the model
-        best_params, best_score = self.optimizer.optimize(model, x_train, y_train)
-        model.set_params(**best_params)
-        model.fit(x_train, y_train)
+        best_params, best_score = optimizer.optimize(
+            model.model,
+            input_features_for_train,
+            target_labels_for_train
+        )
+        model.model.set_params(**best_params)
+        model.model.fit(
+            input_features_for_train,
+            target_labels_for_train
+        )
 
         # Evaluate the model
-        metrics = Metrics.evaluate(model, x_test, y_test)
-        self.result_aggregator.add_result(
-            model_name,
-            optimizer_name,
-            best_params,
-            best_score
+        metrics = model.evaluate(
+            input_features_for_test,
+            target_labels_for_test
         )
 
         # Log the experiment
         experiment_data = {
-            "dataset": dataset_name,
-            "model": model_name,
             "optimizer": optimizer_name,
+            "dataset": dataset_name,
+            "model": model_name,            
             "best_params": best_params,
             "best_score": best_score,
             "metrics": metrics
         }
         self.experiment_tracker.log_experiment(experiment_data)
 
-    def run(self):
+    def run(self) -> None:
         """
         Runs all experiments defined in the configuration.
 
@@ -112,8 +163,5 @@ class Orchestrator:
         """
         for experiment in self.config["experiments"]:
             self.run_experiment(
-                experiment,
-                experiment["dataset"],
-                experiment["model"],
-                experiment["optimizer"]
+                experiment
             )

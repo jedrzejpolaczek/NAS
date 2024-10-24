@@ -46,74 +46,81 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 
 ## File structure
 ```
-├── README.md                     <- The top-level README for developers using this project.
-├── data                          <- One place to store all data used by models.
-│   ├── external                  <- Data from third party sources.
-│   ├── interim                   <- Intermediate data that has been transformed.
-│   ├── processed                 <- The final, canonical data sets for modeling.
-│   └── raw                       <- The original, immutable data dump.
+├── README.md                                    <- The top-level README for developers using this project.
+├── data                                         <- One place to store all data used by models.
+│   ├── external                                 <- Data from third party sources.
+│   ├── interim                                  <- Intermediate data that has been transformed.
+│   ├── processed                                <- The final, canonical data sets for modeling.
+│   └── raw                                      <- The original, immutable data dump.
 │    
-├── docs                          <- A default Sphinx project; see sphinx-doc.org for details
+├── docs                                         <- A default Sphinx project; see sphinx-doc.org for details
 │    
-├── models                        <- Trained and serialized models, model predictions, or model summaries
+├── models                                       <- Trained and serialized models, model predictions, or model summaries
 │    
-├── examples                      <- Examples of how to run the code.
+├── examples                                     <- Examples of how to run the code.
 │    
-├── notebooks                     <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                                    the creator's initials, and a short `-` delimited description, e.g.
-│                                    `1.0-jqp-initial-data-exploration`.
+├── notebooks                                    <- Jupyter notebooks. Naming convention is a number (for ordering),
+│                                                   the creator's initials, and a short `-` delimited description, e.g.
+│                                                   `1.0-jqp-initial-data-exploration`.
 │    
-├── references                    <- Data dictionaries, manuals, and all other explanatory materials.
+├── references                                   <- Data dictionaries, manuals, and all other explanatory materials.
 │    
-├── reports                       <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures                   <- Generated graphics and figures to be used in reporting
+├── reports                                      <- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures                                  <- Generated graphics and figures to be used in reporting
 │    
-├── requirements.txt              <- The requirements file for reproducing the analysis environment, e.g.
-│                                    generated with `pip freeze > requirements.txt`
-├── requirements.dist.txt         <- The requirements file for reproducing the distribution environment
+├── requirements.txt                             <- The requirements file for reproducing the analysis environment, e.g.
+│                                                   generated with `pip freeze > requirements.txt`
+├── requirements.dist.txt                        <- The requirements file for reproducing the distribution environment
 │
-├── setup.py                      <- Make this project pip installable with `pip install -e`
-├── src                           <- Source code for use in this project.
-│   ├── __init__.py               <- Makes src a Python module
+├── setup.py                                     <- Make this project pip installable with `pip install -e`
+├── src                                          <- Source code for use in this project.
+│   ├── __init__.py                              <- Makes src a Python module
 │   │
-│   ├── data                      <- Scripts to manages dataset loading and preprocessing.
-│   │   ├── __init__.py           <- Makes data a Python module.
-│   │   ├── data_loader.py        <- Loads datasets from various sources.
-│   │   └── preprocess.py         <- Handles data preprocessing tasks.
+│   ├── data                                     <- Scripts to manages dataset loading and preprocessing.
+│   │   ├── templates                            <- Tamplates class for handling data.
+│   │   |   ├── __init__.py                      <- Makes data a Python module.
+|   |   |   └──template_data_loader.py           <- 
+│   │   ├── __init__.py                          <- Makes data a Python module.
+│   │   └── tabular_data.py                      <- Handles tabular data.
 │   │
-│   ├── models                    <- Scripts to manages the creation of machine learning models.
-│   │   ├── __init__.py           <- Makes models a Python module.
-│   │   └── model_factory.py      <- Creates models based on specified types and hyperparameters.
+│   ├── models                                   <- Scripts to manages the creation of machine learning models.
+│   │   ├── templates                            <- Tamplates class for handling models.
+│   │   |   ├── __init__.py                      <- Makes data a Python module.
+|   |   |   ├──template_base_model.py            <- Defines an abstract base class for machine learning models.
+|   |   |   ├──template_classification_model.py  <- Defines a base class for classification models.
+|   |   |   └──template_regression_model.py      <- Defines a base class for regression models.
+│   │   ├── __init__.py                          <- Makes models a Python module.
+│   │   └── custom_random_forest_classifier.py   <- Creates model of the RandomForestClassifier.
 │   │
-│   ├── optimization              <- Contains hyperparameter optimization algorithms.
-│   │   ├── __init__.py           <- Makes optimization a Python module.
-│   │   ├── search_space          <- Way of implementation the space of potential solutions.
-│   │   └── search_strategies     <- Algorithms for searching a space of solutions 
-│   │       │                        (Hyperparameter Optimisation Algorithms).
-│   │       ├── grid_search.py    <- Implements grid search optimization.
-│   │       └── random_search.py  <- Implements random search optimization.
+│   ├── optimization                             <- Contains hyperparameter optimization algorithms.
+│   │   ├── __init__.py                          <- Makes optimization a Python module.
+│   │   ├── search_space                         <- Way of implementation the space of potential solutions.
+│   │   └── search_strategies                    <- Algorithms for searching a space of solutions 
+│   │       │                                       (Hyperparameter Optimisation Algorithms).
+│   │       ├── grid_search.py                   <- Implements grid search optimization.
+│   │       └── random_search.py                 <- Implements random search optimization.
 │   │
-│   ├── evaluation                <- Scripts to handles model evaluation and result aggregation.
-│   │   ├── __init__.py           <- Makes evaluation a Python module.
-│   │   ├── metrics.py            <- Calculates performance metrics.
-│   │   └── result_aggregator.py  <- Aggregates and compares optimization results.
+│   ├── evaluation                               <- Scripts to handles model evaluation and result aggregation.
+│   │   ├── __init__.py                          <- Makes evaluation a Python module.
+│   │   ├── metrics.py                           <- Calculates performance metrics.
+│   │   └── result_aggregator.py                 <- Aggregates and compares optimization results.
 │   │
-│   ├── experiment_management     <- Scripts to manages experiment tracking and metadata.
-│   │   ├── __init__.py           <- Makes experiment_management a Python module.
-│   │   └── experiment_tracker.py <- Tracks and logs experiment details.
+│   ├── experiment_management                    <- Scripts to manages experiment tracking and metadata.
+│   │   ├── __init__.py                          <- Makes experiment_management a Python module.
+│   │   └── experiment_tracker.py                <- Tracks and logs experiment details.
 │   │
-│   ├── orchestration             <- Scripts to orchestrates the overall experiment workflow.
-│   │   ├── __init__.py           <- Makes orchestration a Python module.
-│   │   └── orchestrator.py       <- Coordinates the data loading, model training, and optimization processes.
+│   ├── orchestration                            <- Scripts to orchestrates the overall experiment workflow.
+│   │   ├── __init__.py                          <- Makes orchestration a Python module.
+│   │   └── orchestrator.py                      <- Coordinates the data loading, model training, and optimization processes.
 │   │
-│   ├── utils                     <- Contains utility functions and configuration settings.
-│   │   ├── __init__.py           <- Makes utils a Python module.
-│   │   ├── config.py             <- Manages configuration settings.
-│   │   └── logger.py             <- Handles logging across the framework.
+│   ├── utils                                    <- Contains utility functions and configuration settings.
+│   │   ├── __init__.py                          <- Makes utils a Python module.
+│   │   ├── config.py                            <- Manages configuration settings.
+│   │   └── logger.py                            <- Handles logging across the framework.
 │   │
-│   └── main.py                   <- Entry point to run the entire hyperparameter testing framework.
+│   └── main.py                                  <- Entry point to run the entire hyperparameter testing framework.
 │
-└── tests                         <- Test scripts.
+└── tests                                        <- Test scripts.
 ```
 ## Required tools
 - Python 3.8+

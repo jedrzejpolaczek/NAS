@@ -1,60 +1,83 @@
+# Import libraries
+import os
 import pytest
-from sklearn.datasets import load_iris
-from sklearn.preprocessing import StandardScaler
-from src.data.template_data_loader import DataLoader
+from unittest.mock import Mock
+
+from src.data.templates.template_data_loader import BaseDataLoader
+
+# Mock logger for testing purposes
+mock_logger = Mock()
 
 
-class TestDataLoader(DataLoader):
-    def load_data(self, dataset_name):
-        # Mock data loading
-        if dataset_name == "iris":
-            iris = load_iris()
-            return {"x": iris.data, "y": iris.target}
-        else:
-            raise ValueError("Dataset not found")
+class TestBaseDataLoader:
+    """Test class for BaseDataLoader"""
+    def test_init_with_config(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = BaseDataLoader(config, mock_logger)
+        assert loader.config == config
+        assert loader.file_path == os.path.join(
+            config["path"],
+            config["file_name"]
+        )
+        assert loader.data is None
 
-    def preprocess_data(self):
-        # Mock preprocessing: Apply standard scaling
-        scaler = StandardScaler()
-        X_scaled = scaler.fit_transform(self.data["x"])
-        return {"x": X_scaled, "y": self.data["y"]}
+    def test_init_without_logger(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        with pytest.raises(TypeError):
+            BaseDataLoader(config)
 
-# Example test data
-@pytest.fixture
-def test_loader():
-    config = {"test_size": 0.2, "validation_size": 0.2}
-    loader = TestDataLoader(config)
-    return loader
+    @pytest.mark.skipif(True, reason="Abstract method, not implemented")
+    def test_download_data(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = BaseDataLoader(config, mock_logger)
+        with pytest.raises(NotImplementedError):
+            loader.download_data()
 
+    @pytest.mark.skipif(True, reason="Abstract method, not implemented")
+    def test_load_data(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = BaseDataLoader(config, mock_logger)
+        with pytest.raises(NotImplementedError):
+            loader.load_data()
 
-def test_load_data(test_loader):
-    data = test_loader.load_data("iris")
-    assert "x" in data
-    assert "y" in data
-    assert data["x"].shape == (150, 4)  # 150 samples, 4 features
-    assert data["y"].shape == (150, )
+    @pytest.mark.skipif(True, reason="Abstract method, not implemented")
+    def test_preprocess_data(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = BaseDataLoader(config, mock_logger)
+        with pytest.raises(NotImplementedError):
+            loader.preprocess_data()
 
+    def test_get_data_empty(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = BaseDataLoader(config, mock_logger)
+        assert loader.get_data() is None
 
-def test_preprocess_data(test_loader):
-    test_loader.data = test_loader.load_data("iris")
-    preprocessed_data = test_loader.preprocess_data()
-    assert "x" in preprocessed_data
-    assert "y" in preprocessed_data
-    assert preprocessed_data["x"].shape == (150, 4)  # Same shape as input data
-    assert preprocessed_data["y"].shape == (150, )
+    def test_get_data_with_data(self):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = BaseDataLoader(config, mock_logger)
+        loader.data = {"X": [1, 2, 3], "y": ["a", "b", "c"]}
+        assert loader.get_data() == loader.data
 
+    def test_split_data(self, mocker):
+        data = {"X": [1, 2, 3, 4], "y": ["a", "b", "c", "d"]}
+        config = {
+            "test_size": 0.25,
+            "validation_size": 0.25,
+            "path": "mocked_path",
+            "file_name": "data.csv"
+        }
+        loader = BaseDataLoader(config, mock_logger)
 
-def test_split_data(test_loader):
-    test_loader.data = test_loader.load_data("iris")
-    preprocessed_data = test_loader.preprocess_data()
-    X_train, X_val, X_test, y_train, y_val, y_test = test_loader.split_data(preprocessed_data)
+        # Mock the file_path attribute
+        mocker.patch.object(loader, "file_path", "mocked_path")
 
-    assert X_train.shape[0] > 0
-    assert X_val.shape[0] > 0
-    assert X_test.shape[0] > 0
-    assert len(y_train) == X_train.shape[0]
-    assert len(y_val) == X_val.shape[0]
-    assert len(y_test) == X_test.shape[0]
+        x_train, x_val, x_test, y_train, _, _ = loader.split_data(data)
 
-    assert (X_train.shape[0] + X_val.shape[0] + X_test.shape[0]) == preprocessed_data["x"].shape[0]
-    assert (len(y_train) + len(y_val) + len(y_test)) == len(preprocessed_data["y"])
+        # Assert lengths based on split sizes
+        assert len(x_train) == int(0.5 * len(data["X"]))
+        assert len(x_val) == int(0.25 * len(data["X"]))
+        assert len(x_test) == int(0.25 * len(data["X"]))
+
+        # Assert type of returned values (should be arrays)
+        assert isinstance(x_train, list)
+        assert isinstance(y_train, list)

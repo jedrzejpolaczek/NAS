@@ -10,6 +10,7 @@ import logging
 
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.data.tabular_data import TabularDataLoader
+from src.data.time_series_data import TimeSeriesDataLoader
 from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
 
 
@@ -25,6 +26,7 @@ class ComponentFactory:
             },
             "data_loader": {
                 "tabular_data": TabularDataLoader,
+                "time_series_data": TimeSeriesDataLoader
             },
             "model": {
                 "random_forest_classifier": CustomRandomForestClassifier,

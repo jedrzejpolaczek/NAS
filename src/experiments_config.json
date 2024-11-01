@@ -1,0 +1,69 @@
+{
+    "log_dir": "logs",
+    "experiments": [
+        {
+            "optimizer": {
+                "name": "grid_search",
+                "config": {
+                    "param_grid": {
+                        "n_estimators": [10, 100],
+                        "max_depth": [3, 5]
+                    },
+                    "cv": 3,
+                    "scoring": "accuracy"
+                }
+            },
+            "dataset": {
+                "name": "tabular_data",
+                "path": "data/raw/tabular_data",
+                "file_name": "iris_dataset.csv",
+                "dataset_name": "iris",
+                "config": {
+                    "test_size": 0.2,
+                    "validation_size": 0.2
+                }
+            },
+            "model": {
+                "name": "random_forest_classifier",
+                "config": {
+                    "n_estimators": 100
+                },
+                "evaluation": {
+                    "average": "micro"
+                }
+            }
+        },
+        {
+            "optimizer": {
+                "name": "grid_search",
+                "config": {
+                    "param_grid": {
+                        "n_estimators": [10, 100],
+                        "max_depth": [3, 5]
+                    },
+                    "cv": 3,
+                    "scoring": "accuracy"
+                }
+            },
+            "dataset": {
+                "name": "time_series_data",
+                "path": "data/raw/tabular_data",
+                "file_name": "iris_dataset.csv",
+                "dataset_name": "iris",
+                "config": {
+                    "test_size": 0.2,
+                    "validation_size": 0.2
+                }
+            },
+            "model": {
+                "name": "random_forest_classifier",
+                "config": {
+                    "n_estimators": 100
+                },
+                "evaluation": {
+                    "average": "micro"
+                }
+            }
+        }
+    ]
+}

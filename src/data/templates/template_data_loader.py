@@ -31,7 +31,7 @@ Usage Example:
     x_train, x_val, x_test, y_train, y_val, y_test = loader.split_data(data)
 
     # Option 2
-    x_train, x_val, x_test, y_train, y_val, y_test loader.get_data_sets()
+    x_train, x_val, x_test, y_train, y_val, y_test = loader.get_data_sets()
 
 """
 import os
@@ -93,6 +93,13 @@ class BaseDataLoader:
                 An instance of the logger object shared in whole project.
         """
         self.config = config
+
+        # Error handling for paths
+        required_keys = ["path", "file_name"]
+        for key in required_keys:
+            if key not in self.config:
+                raise KeyError(f"Missing required configuration key: '{key}'")
+
         self.file_path = os.path.join(
             self.config["path"],
             self.config["file_name"]
@@ -155,7 +162,9 @@ class BaseDataLoader:
                 A dictionary containing the loaded features and labels, with
                 keys like 'x' for features and 'y' for labels.
         """
-        self.logger.debug("Retrieving data: %s", self.data)
+        self.logger.debug("Retrieving data with shape: X=%s, y=%s", 
+                         self.data["X"].shape if "X" in self.data else None,
+                         self.data["y"].shape if "y" in self.data else None)
         return self.data
 
     def split_data(
@@ -188,19 +197,21 @@ class BaseDataLoader:
         x_train, x_temp, y_train, y_temp = train_test_split(
             data["X"],
             data["y"],
-            test_size=(test_size + validation_size)
+            test_size=(test_size + validation_size),
+            random_state=self.config.get("random_state", 42)
         )
 
         # Split the temporary set into validation and test sets
         x_val, x_test, y_val, y_test = train_test_split(
             x_temp,
             y_temp,
-            test_size=test_size / (test_size + validation_size)
+            test_size=test_size / (test_size + validation_size),
+            random_state=self.config.get("random_state", 42)
         )
 
         return x_train, x_val, x_test, y_train, y_val, y_test
-    
-    def get_data_sets(self) -> dict:
+
+    def get_data_sets(self) -> tuple:
         """
         Executes the data pipeline and
         returns the resulting split datasets.
@@ -212,9 +223,10 @@ class BaseDataLoader:
         training, validation, and test sets by calling `split_data`.
 
         Returns:
-            dict:
-                A dictionary containing the
-                training, validation, and test datasets.
+            tuple:
+                Six arrays representing the training, validation, and test
+                sets for features and labels respectively:
+                (x_train, x_val, x_test, y_train, y_val, y_test)
         """
         self.data_pipeline()
         return self.split_data(self.data)

@@ -5,7 +5,15 @@ Functions:
     get_logger(name, log_file, level=logging.INFO): 
         Creates a logger object with a configured file handler and formatter.
 """
+import os
+from logging.handlers import RotatingFileHandler
 import logging
+
+# Configuration constants
+DEFAULT_LOG_DIR = "logs"
+MAX_BYTES = 10 * 1024 * 1024  # 10MB
+BACKUP_COUNT = 5
+
 
 
 def get_logger(
@@ -34,11 +42,23 @@ def get_logger(
     if logger.handlers:
         return logger
 
+    # Ensure log directory exists and validate path
+    log_dir = os.path.abspath(DEFAULT_LOG_DIR)
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.abspath(
+        os.path.join(
+            log_dir,
+            os.path.basename(log_file)
+        )
+    )
+    if not log_path.startswith(log_dir):
+        raise ValueError("Log file must be within the configured log directory")
+
     try:
-        logger = logging.getLogger(name)
-        handler = logging.FileHandler(log_file)
-        handler.setFormatter(
-            logging.Formatter("%(asctime)s %(levelname)s  %(message)s")
+        handler = RotatingFileHandler(
+            log_path,
+            maxBytes=MAX_BYTES,
+            backupCount=BACKUP_COUNT
         )
         logger.setLevel(level)
         logger.addHandler(handler)
@@ -50,4 +70,5 @@ def get_logger(
 
     # Prevent propagation to root logger
     logger.propagate = False
+
     return logger

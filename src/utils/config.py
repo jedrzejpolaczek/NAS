@@ -39,10 +39,10 @@ def load_config(
 
     except FileNotFoundError as e:
         raise FileNotFoundError(
-            "Configuration file not found: {config_path}"
+            f"Configuration file not found: {config_path}"
         ) from e
 
     except json.JSONDecodeError as e:
         raise json.JSONDecodeError(
             f"Invalid JSON in configuration file: {str(e)}", e.doc, e.pos
-        )
+        ) from e

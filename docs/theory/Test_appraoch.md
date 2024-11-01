@@ -43,7 +43,7 @@ Different types of datasets can pose unique challenges and can influence the eff
 | Missing Data                | This is any dataset that has missing or null values for some features.                                      | UCI Adult Dataset, Medical Datasets (with missing patient data)                                |
 
 
-Each type of datasets should be test in 3 variation:
+Each dataset type should be tested in 3 variations:
 - **Small Datasets:** Important to test if the optimization algorithm works well with limited data and avoids overfitting.
 - **Medium Datasets:** Helpful to evaluate the optimization algorithm's performance on a standard size of data.
 - **Large Datasets:** Necessary to ensure the algorithm scales well and remains efficient with a large volume of data.

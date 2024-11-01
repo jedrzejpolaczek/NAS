@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 
 
 def prepare_cifar10_data():
@@ -35,7 +34,9 @@ def get_model(
         [
             tf.keras.layers.Flatten(),
             tf.keras.layers.Dense(first_layer_number_of_neurons, activation='relu'),
+            tf.keras.layers.Dropout(0.2),
             tf.keras.layers.Dense(second_layer_number_of_neurons, activation='relu'),
+            tf.keras.layers.Dropout(0.2),
             tf.keras.layers.Dense(10, activation='softmax')
         ]
     )

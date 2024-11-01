@@ -1,6 +1,0 @@
-{
-    "name": "random_forest_classifier",
-    "config": {
-        "n_estimators": 100
-    }
-}

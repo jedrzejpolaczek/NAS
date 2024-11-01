@@ -28,13 +28,26 @@ def get_logger(
         logging.Logger:
             The created logger object.
     """
-
     logger = logging.getLogger(name)
-    handler = logging.FileHandler(log_file)
-    handler.setFormatter(
-        logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
-    )
-    logger.setLevel(level)
-    logger.addHandler(handler)
 
+    # Avoid duplicate handlers
+    if logger.handlers:
+        return logger
+
+    try:
+        logger = logging.getLogger(name)
+        handler = logging.FileHandler(log_file)
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s %(levelname)s  %(message)s")
+        )
+        logger.setLevel(level)
+        logger.addHandler(handler)
+
+    except (IOError, PermissionError) as e:
+        raise RuntimeError(
+            f"Failed to initialize logger: {e}"
+        ) from e
+
+    # Prevent propagation to root logger
+    logger.propagate = False
     return logger

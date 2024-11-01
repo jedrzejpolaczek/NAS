@@ -198,13 +198,6 @@ class BaseDataLoader:
             test_size=test_size / (test_size + validation_size)
         )
 
-        self.logger.info("Data split into training, validation, and test sets.")
-        self.logger.debug("X train dataset: %s", x_train)
-        self.logger.debug("X validation dataset: %s", x_val)
-        self.logger.debug("X test dataset: %s", x_test)
-        self.logger.debug("Y train dataset: %s", y_train)
-        self.logger.debug("Y validation dataset: %s", y_val)
-        self.logger.debug("Y test dataset: %s", y_test)
         return x_train, x_val, x_test, y_train, y_val, y_test
     
     def get_data_sets(self) -> dict:

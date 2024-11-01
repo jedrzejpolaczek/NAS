@@ -1,1 +1,0 @@
-Early stopping - jako podejście.

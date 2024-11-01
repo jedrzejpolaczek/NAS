@@ -34,8 +34,8 @@ class BaseSearch(ABC):
     def optimize(
         self,
         model: BaseModel,
-        X_train: pd.DataFrame,
-        y_train: pd.DataFrame
+        input_features_for_train: pd.DataFrame,
+        target_labels_for_train: pd.DataFrame
     ):
         """
         Perform search optimization on the model.
@@ -43,9 +43,9 @@ class BaseSearch(ABC):
         Args:
             model (BaseModel):
                 The model to be optimized.
-            X_train (pd.DataFrame):
+            input_features_for_train (pd.DataFrame):
                 Training input samples.
-            y_train (pd.DataFrame):
+            target_labels_for_train (pd.DataFrame):
                 Target values.
 
         Returns:

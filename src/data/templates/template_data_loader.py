@@ -162,9 +162,6 @@ class BaseDataLoader:
                 A dictionary containing the loaded features and labels, with
                 keys like 'x' for features and 'y' for labels.
         """
-        self.logger.debug("Retrieving data with shape: X=%s, y=%s", 
-                         self.data["X"].shape if "X" in self.data else None,
-                         self.data["y"].shape if "y" in self.data else None)
         return self.data
 
     def split_data(

@@ -13,24 +13,30 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--config",
-        default="experiments_config.json",
+        default="experiments/configs/all_algorithms.json",
         help="Path to the experiments configuration file. \
-            Default ./experiments_config.json"
+            Default ./experiments/configs/all_algorithms.json"
     )
     args = parser.parse_args()
-
-    logger = get_logger(
-        name="NAS",
-        log_file=args.config["log_dir"]
-    )
 
     try:
         if not Path(args.config).exists():
             raise FileNotFoundError(f"Config file not found: {args.config}")
 
-        logger.info("Loading configuration...")
+        print("Loading configuration...")
         config = load_config(args.config)
 
+        print("Set logger...")
+        logger = get_logger(
+            name="NAS",
+            log_file=config["log_dir"]
+        )
+
+    except Exception as e:
+        print("Orchestration failed: %s", e)
+        sys.exit(1)
+    
+    try:        
         logger.info("Initializing orchestrator...")
         orchestrator = Orchestrator(config)
 

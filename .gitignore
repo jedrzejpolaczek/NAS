@@ -12,6 +12,7 @@
 wip_*
 *_venv
 venv_*
+.venv*
 data/*
 logs
 

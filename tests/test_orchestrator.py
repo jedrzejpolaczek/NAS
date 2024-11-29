@@ -7,7 +7,7 @@ from src.experiment_management.experiment_tracker import ExperimentTracker
 
 def test_init_with_valid_config():
     """Tests if Orchestrator initializes correctly with valid config."""
-    config = {"log_dir": "test_logs"}
+    config = {"log_dir": "tests/data/test_logs"}
     orchestrator = Orchestrator(config)
     assert orchestrator.config == config
     assert isinstance(orchestrator.component_factory, ComponentFactory)

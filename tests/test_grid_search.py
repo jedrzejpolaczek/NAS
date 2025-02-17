@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import GridSearchCV
 
-from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
+from src.models.supervised_learning.custom_random_forest_classifier import CustomRandomForestClassifier
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.models.templates.template_base_model import BaseModel
 

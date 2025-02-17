@@ -3,7 +3,7 @@ import logging
 from src.utils.component_factory import ComponentFactory
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.data.tabular_data import TabularDataLoader
-from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
+from src.models.supervised_learning.custom_random_forest_classifier import CustomRandomForestClassifier
 
 
 def test_create_component_valid_optimizer():

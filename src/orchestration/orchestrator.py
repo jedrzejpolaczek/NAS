@@ -32,7 +32,8 @@ class Orchestrator:
     """
     def __init__(
         self,
-        config: dict
+        config: dict,
+        logger
     ) -> None:
         """
         Initializes the Orchestrator with configuration and various components.
@@ -45,7 +46,7 @@ class Orchestrator:
         self.config = config
         self.component_factory = ComponentFactory()
         self.experiment_tracker = ExperimentTracker(config["log_dir"])
-        self.logger = get_logger("NAS logger", os.path.join(config["log_dir"], "log.txt"))
+        self.logger = logger
 
     def get_component(
         self,

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification
-from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
+from src.models.supervised_learning.custom_random_forest_classifier import CustomRandomForestClassifier
 
 
 mock_logger = Mock()

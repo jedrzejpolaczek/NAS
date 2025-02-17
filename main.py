@@ -33,12 +33,12 @@ if __name__ == "__main__":
         )
 
     except Exception as e:
-        print("Orchestration failed: %s", e)
+        print("Orchestration failed due to problem with setting logger: %s", e)
         sys.exit(1)
     
     try:        
         logger.info("Initializing orchestrator...")
-        orchestrator = Orchestrator(config)
+        orchestrator = Orchestrator(config, logger)
 
         logger.info("Starting orchestration...")
         orchestrator.run()

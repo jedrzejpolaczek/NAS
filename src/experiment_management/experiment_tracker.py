@@ -19,11 +19,6 @@ class ExperimentTracker:
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
 
-        log_path = os.path.join(self.log_dir, "log.txt")
-
-        with open(log_path, "a", encoding="utf-8") as file:
-            file.write("Starting new log entry...")
-
     def log_experiment(self, experiment_data):
         """
         Log the experiment data.

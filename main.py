@@ -29,7 +29,7 @@ if __name__ == "__main__":
         print("Set logger...")
         logger = get_logger(
             name="NAS",
-            log_file=config["log_dir"]
+            log_file=config["log_dir"]+"/orchestration.log",
         )
 
     except Exception as e:
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         logger.info("Starting orchestration...")
         orchestrator.run()
 
-        logger.info("Orchestration completed successfully")
+        logger.info("Orchestration completed.")
 
     except FileNotFoundError as e:
         logger.error("Configuration error: %s", e)

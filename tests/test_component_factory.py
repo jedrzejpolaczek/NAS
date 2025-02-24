@@ -3,7 +3,7 @@ import logging
 from src.utils.component_factory import ComponentFactory
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.data.tabular_data import TabularDataLoader
-from src.models.supervised_learning.custom_random_forest_classifier import CustomRandomForestClassifier
+from src.models.supervised_learning.random_forest_classifier import RandomForestClassifier
 
 
 def test_create_component_valid_optimizer():
@@ -43,14 +43,14 @@ def test_create_component_valid_data_loader():
 
 
 def test_create_component_valid_model():
-    """Tests if create_component creates a CustomRandomForestClassifier for 'model' type."""
+    """Tests if create_component creates a RandomForestClassifier for 'model' type."""
     factory = ComponentFactory()
     model_config = {"config":{"n_estimators": 100}}  # Configuration for the model
     logger = logging.getLogger("test_logger")
     component = factory.create_component(
         "model", "random_forest_classifier", model_config, logger
     )
-    assert isinstance(component, CustomRandomForestClassifier)
+    assert isinstance(component, RandomForestClassifier)
     assert component.config == model_config  # Check only model config
     assert component.logger == logger
 

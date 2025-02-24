@@ -6,7 +6,7 @@ import tensorflow as tf
 from src.models.templates.template_classification_model import ClassificationModel
 
 
-class CustomRandomForestClassifier(ClassificationModel):
+class RandomForestClassifier(ClassificationModel):
     def __init__(
         self,
         config: dict,
@@ -168,7 +168,7 @@ class CustomRandomForestClassifier(ClassificationModel):
             "logger": self.logger
         }
 
-    def set_params(self, **params) -> 'CustomRandomForestClassifier':
+    def set_params(self, **params) -> 'RandomForestClassifier':
         for param, value in params.items():
             if param in ["n_estimators", "max_depth", "min_samples_split"]:
                 setattr(self, param, value)

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_classification
-from src.models.supervised_learning.custom_random_forest_classifier import CustomRandomForestClassifier
+from src.models.supervised_learning.random_forest_classifier import RandomForestClassifier
 
 
 mock_logger = Mock()
@@ -27,8 +27,8 @@ def test_fit_predict(config):
     # Create a random dataset
     X, y = make_classification(n_samples=100, n_features=10, random_state=42)
 
-    # Create a CustomRandomForestClassifier instance
-    model = CustomRandomForestClassifier(config, mock_logger)
+    # Create a RandomForestClassifier instance
+    model = RandomForestClassifier(config, mock_logger)
 
     # Fit the model
     model.fit(pd.DataFrame(X), pd.Series(y))
@@ -45,8 +45,8 @@ def test_predict_proba(config):
     # Create a random dataset
     X, y = make_classification(n_samples=100, n_features=10, random_state=42)
 
-    # Create a CustomRandomForestClassifier instance
-    model = CustomRandomForestClassifier(config, mock_logger)
+    # Create a RandomForestClassifier instance
+    model = RandomForestClassifier(config, mock_logger)
 
     # Fit the model
     model.fit(pd.DataFrame(X), pd.Series(y))
@@ -63,8 +63,8 @@ def test_evaluate(config):
     # Create a random dataset
     X, y = make_classification(n_samples=100, n_features=10, random_state=42)
 
-    # Create a CustomRandomForestClassifier instance
-    model = CustomRandomForestClassifier(config, mock_logger)
+    # Create a RandomForestClassifier instance
+    model = RandomForestClassifier(config, mock_logger)
 
     # Fit the model
     model.fit(pd.DataFrame(X), pd.Series(y))

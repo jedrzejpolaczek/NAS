@@ -89,7 +89,7 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 |   |   |   ├──template_classification_model.py  <- Defines a base class for classification models.
 |   |   |   └──template_regression_model.py      <- Defines a base class for regression models.
 │   │   ├── __init__.py                          <- Makes models a Python module.
-│   │   └── custom_random_forest_classifier.py   <- Creates model of the RandomForestClassifier.
+│   │   └── random_forest_classifier.py          <- Creates model of the RandomForestClassifier.
 │   │
 │   ├── optimization                             <- Contains hyperparameter optimization algorithms.
 │   │   ├── __init__.py                          <- Makes optimization a Python module.

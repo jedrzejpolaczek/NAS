@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import GridSearchCV
 
-from src.models.supervised_learning.custom_random_forest_classifier import CustomRandomForestClassifier
+from src.models.supervised_learning.random_forest_classifier import RandomForestClassifier
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.models.templates.template_base_model import BaseModel
 
@@ -50,7 +50,7 @@ def test_optimize_with_mock_model(config):
             }
         }
     }
-    model = CustomRandomForestClassifier(mock_config["model"], mock_logger).model
+    model = RandomForestClassifier(mock_config["model"], mock_logger).model
     # Create a pandas DataFrame with your data
     data = pd.DataFrame({
         "sepal length (cm)": [5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.8, 4.8, 4.3, 5.8, 5.7, 5.4, 5.1, 5.7, 5.1, 5.4, 5.1, 4.6, 5.1, 4.8, 5.0, 5.0, 5.2, 5.2],

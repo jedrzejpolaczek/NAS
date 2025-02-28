@@ -1,15 +1,26 @@
 import pytest
 import logging
+
 from src.utils.component_factory import ComponentFactory
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
+from src.models.ensemble_learning.random_forest_classifier import RandomForestClassifier
 from src.data.tabular_data import TabularDataLoader
-from src.models.custom_random_forest_classifier import CustomRandomForestClassifier
 
 
 def test_create_component_valid_optimizer():
     """Tests if create_component creates a GridSearchOptimizer for 'optimizer' type."""
     factory = ComponentFactory()
-    component_config = {"param1": "value1"}
+    component_config = {
+        "config": {
+            "param_grid": {
+                "n_estimators": [10, 50],
+                "max_depth": [3, 5],
+                "min_samples_split": [2, 4]
+            },
+            "cv": 2,
+            "scoring": "accuracy"
+        }
+    }
     logger = logging.getLogger("test_logger")
     component = factory.create_component(
         "optimizer", "grid_search", component_config, logger
@@ -43,14 +54,14 @@ def test_create_component_valid_data_loader():
 
 
 def test_create_component_valid_model():
-    """Tests if create_component creates a CustomRandomForestClassifier for 'model' type."""
+    """Tests if create_component creates a RandomForestClassifier for 'model' type."""
     factory = ComponentFactory()
     model_config = {"config":{"n_estimators": 100}}  # Configuration for the model
     logger = logging.getLogger("test_logger")
     component = factory.create_component(
         "model", "random_forest_classifier", model_config, logger
     )
-    assert isinstance(component, CustomRandomForestClassifier)
+    assert isinstance(component, RandomForestClassifier)
     assert component.config == model_config  # Check only model config
     assert component.logger == logger
 

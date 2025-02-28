@@ -185,7 +185,7 @@ class BaseDataLoader:
                 sets for features and labels respectively: 
                 (x_train, x_val, x_test, y_train, y_val, y_test).
         """
-        self.logger.info("Splitting data...")
+        self.logger.info("Starting splitting data...")
         test_size = self.config.get("test_size", 0.2)
         validation_size = self.config.get("validation_size", 0.2)
 
@@ -205,6 +205,7 @@ class BaseDataLoader:
             test_size=test_size / (test_size + validation_size),
             random_state=self.config.get("random_state", 42)
         )
+        self.logger.info("Splitting data completed.")
 
         return x_train, x_val, x_test, y_train, y_val, y_test
 

@@ -6,7 +6,7 @@ from src.experiment_management.experiment_tracker import ExperimentTracker
 
 def test_experiment_tracker_initialization():
     """Tests if the ExperimentTracker initializes correctly."""
-    log_dir = "test_logs"
+    log_dir = "tests/data/test_logs"
     tracker = ExperimentTracker(log_dir)
     assert tracker.log_dir == log_dir
     assert os.path.exists(log_dir)
@@ -16,7 +16,7 @@ def test_experiment_tracker_initialization():
 
 def test_log_experiment():
     """Tests if the log_experiment method logs data correctly."""
-    log_dir = "test_logs"
+    log_dir = "tests/data/test_logs"
     tracker = ExperimentTracker(log_dir)
     experiment_data = {"param1": "value1", "param2": "value2"}
     tracker.log_experiment(experiment_data)
@@ -30,7 +30,7 @@ def test_log_experiment():
 
 def test_log_experiment_handles_exceptions():
     """Tests if the log_experiment method handles exceptions gracefully."""
-    log_dir = "test_logs"
+    log_dir = "tests/data/test_logs"
     tracker = ExperimentTracker(log_dir)
     experiment_data = {"param1": "value1", "param2": "value2"}
     with pytest.raises(OSError):

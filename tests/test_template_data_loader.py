@@ -5,60 +5,89 @@ from unittest.mock import Mock
 
 from src.data.templates.template_data_loader import BaseDataLoader
 
-# Mock logger for testing purposes
-mock_logger = Mock()
+
+# Concrete subclass for testing
+class ConcreteDataLoader(BaseDataLoader):
+    """A concrete subclass of BaseDataLoader for testing purposes."""
+    def download_data(self) -> None:
+        """Simple implementation that logs a message and does nothing."""
+        self.logger.info("Downloading data...")
+
+
+    def load_data(self) -> None:
+        """Simple implementation that sets mock data."""
+        self.logger.info("Loading data...")
+        self.data = {"X": [1, 2, 3, 4], "y": ["a", "b", "c", "d"]}
+
+
+    def preprocess_data(self) -> None:
+        """Simple implementation that logs a message and modifies data."""
+        self.logger.info("Preprocessing data...")
+        if self.data:
+            self.data["X"] = [x * 2 for x in self.data["X"]]  # Double the X values
+
+
+# Fixture for mock logger to ensure fresh instance per test
+@pytest.fixture
+def mock_logger():
+    return Mock()
 
 
 class TestBaseDataLoader:
-    """Test class for BaseDataLoader"""
-    def test_init_with_config(self):
+    """Test class for BaseDataLoader using a concrete subclass"""
+    def test_init_with_config(self, mock_logger):
         config = {"path": "data", "file_name": "data.csv"}
-        loader = BaseDataLoader(config, mock_logger)
+        loader = ConcreteDataLoader(config, mock_logger)
         assert loader.config == config
-        assert loader.file_path == os.path.join(
-            config["path"],
-            config["file_name"]
-        )
+        assert loader.file_path == os.path.join(config["path"], config["file_name"])
         assert loader.data is None
+
 
     def test_init_without_logger(self):
         config = {"path": "data", "file_name": "data.csv"}
         with pytest.raises(TypeError):
             BaseDataLoader(config)
 
-    @pytest.mark.skipif(True, reason="Abstract method, not implemented")
-    def test_download_data(self):
-        config = {"path": "data", "file_name": "data.csv"}
-        loader = BaseDataLoader(config, mock_logger)
-        with pytest.raises(NotImplementedError):
-            loader.download_data()
 
-    @pytest.mark.skipif(True, reason="Abstract method, not implemented")
-    def test_load_data(self):
+    def test_download_data(self, mock_logger):
         config = {"path": "data", "file_name": "data.csv"}
-        loader = BaseDataLoader(config, mock_logger)
-        with pytest.raises(NotImplementedError):
-            loader.load_data()
+        loader = ConcreteDataLoader(config, mock_logger)
+        loader.download_data()
+        mock_logger.info.assert_called_once_with("Downloading data...")
+        assert loader.data is None  # download_data doesn’t set data
 
-    @pytest.mark.skipif(True, reason="Abstract method, not implemented")
-    def test_preprocess_data(self):
-        config = {"path": "data", "file_name": "data.csv"}
-        loader = BaseDataLoader(config, mock_logger)
-        with pytest.raises(NotImplementedError):
-            loader.preprocess_data()
 
-    def test_get_data_empty(self):
+    def test_load_data(self, mock_logger):
         config = {"path": "data", "file_name": "data.csv"}
-        loader = BaseDataLoader(config, mock_logger)
+        loader = ConcreteDataLoader(config, mock_logger)
+        loader.load_data()
+        mock_logger.info.assert_called_once_with("Loading data...")
+        assert loader.data == {"X": [1, 2, 3, 4], "y": ["a", "b", "c", "d"]}
+
+
+    def test_preprocess_data(self, mock_logger):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = ConcreteDataLoader(config, mock_logger)
+        loader.data = {"X": [1, 2, 3, 4], "y": ["a", "b", "c", "d"]}
+        loader.preprocess_data()
+        mock_logger.info.assert_called_once_with("Preprocessing data...")
+        assert loader.data == {"X": [2, 4, 6, 8], "y": ["a", "b", "c", "d"]}
+
+
+    def test_get_data_empty(self, mock_logger):
+        config = {"path": "data", "file_name": "data.csv"}
+        loader = ConcreteDataLoader(config, mock_logger)
         assert loader.get_data() is None
 
-    def test_get_data_with_data(self):
+
+    def test_get_data_with_data(self, mock_logger):
         config = {"path": "data", "file_name": "data.csv"}
-        loader = BaseDataLoader(config, mock_logger)
+        loader = ConcreteDataLoader(config, mock_logger)
         loader.data = {"X": [1, 2, 3], "y": ["a", "b", "c"]}
         assert loader.get_data() == loader.data
 
-    def test_split_data(self, mocker):
+
+    def test_split_data(self, mock_logger, mocker):
         data = {"X": [1, 2, 3, 4], "y": ["a", "b", "c", "d"]}
         config = {
             "test_size": 0.25,
@@ -66,7 +95,7 @@ class TestBaseDataLoader:
             "path": "mocked_path",
             "file_name": "data.csv"
         }
-        loader = BaseDataLoader(config, mock_logger)
+        loader = ConcreteDataLoader(config, mock_logger)
 
         # Mock the file_path attribute
         mocker.patch.object(loader, "file_path", "mocked_path")

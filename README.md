@@ -55,9 +55,13 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 │    
 ├── docs                                         <- A default Sphinx project; see sphinx-doc.org for details
 │    
-├── models                                       <- Trained and serialized models, model predictions, or model summaries
-│    
 ├── examples                                     <- Examples of how to run the code.
+│    
+├── experiments                                  <- Result of runed experiments.
+│   └── configs                                  <- Configuration files for experiments.
+│       └── all_algorithms.json                  <- Configuration file to run experiments for all implemented algorithms.
+│    
+├── models                                       <- Trained and serialized models, model predictions, or model summaries
 │    
 ├── notebooks                                    <- Jupyter notebooks. Naming convention is a number (for ordering),
 │                                                   the creator's initials, and a short `-` delimited description, e.g.
@@ -68,11 +72,6 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 ├── reports                                      <- Generated analysis as HTML, PDF, LaTeX, etc.
 │   └── figures                                  <- Generated graphics and figures to be used in reporting
 │    
-├── requirements.txt                             <- The requirements file for reproducing the analysis environment, e.g.
-│                                                   generated with `pip freeze > requirements.txt`
-├── requirements.dist.txt                        <- The requirements file for reproducing the distribution environment
-│
-├── setup.py                                     <- Make this project pip installable with `pip install -e`
 ├── src                                          <- Source code for use in this project.
 │   ├── __init__.py                              <- Makes src a Python module
 │   │
@@ -90,7 +89,7 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 |   |   |   ├──template_classification_model.py  <- Defines a base class for classification models.
 |   |   |   └──template_regression_model.py      <- Defines a base class for regression models.
 │   │   ├── __init__.py                          <- Makes models a Python module.
-│   │   └── custom_random_forest_classifier.py   <- Creates model of the RandomForestClassifier.
+│   │   └── random_forest_classifier.py          <- Creates model of the RandomForestClassifier.
 │   │
 │   ├── optimization                             <- Contains hyperparameter optimization algorithms.
 │   │   ├── __init__.py                          <- Makes optimization a Python module.
@@ -113,14 +112,30 @@ The framework is designed to run on a Python 3.8+ environment. It can be execute
 │   │   ├── __init__.py                          <- Makes orchestration a Python module.
 │   │   └── orchestrator.py                      <- Coordinates the data loading, model training, and optimization processes.
 │   │
-│   ├── utils                                    <- Contains utility functions and configuration settings.
-│   │   ├── __init__.py                          <- Makes utils a Python module.
-│   │   ├── config.py                            <- Manages configuration settings.
-│   │   └── logger.py                            <- Handles logging across the framework.
-│   │
-│   └── main.py                                  <- Entry point to run the entire hyperparameter testing framework.
+│   └── utils                                    <- Contains utility functions and configuration settings.
+│       ├── __init__.py                          <- Makes utils a Python module.
+│       ├── config.py                            <- Manages configuration settings.
+│       └── logger.py                            <- Handles logging across the framework.
 │
-└── tests                                        <- Test scripts.
+├── tests                                        <- Test scripts.
+│
+├── .gitignore                                   <- List of files that Git will ignore.
+│
+├── .pylintrc                                    <- Config file for linter, "If you maser the mistake, it will be a technique".
+│
+├── LICENSE                                      <- License for this repository. Read it before use anything from this repository outside your private usage.
+│
+├── main.py                                      <- Entry point to run the entire hyperparameter testing framework.
+│
+├── README.md                                    <- You currently reading it...
+│
+├── requirements.dist.txt                        <- The requirements file for reproducing the distribution environment
+│
+├── requirements.txt                             <- The requirements file for reproducing the analysis environment, e.g.
+│                                                   generated with `pip freeze > requirements.txt`
+│
+└── setup.py                                     <- Make this project pip installable with `pip install -e`
+
 ```
 ## Required tools
 - Python 3.8+

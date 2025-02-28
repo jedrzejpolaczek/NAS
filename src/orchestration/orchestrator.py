@@ -7,7 +7,7 @@ like `ComponentFactory`, `ResultAggregator`, and `ExperimentTracker`
 to manage data loading, preprocessing, model training,
 optimization, and result aggregation.
 """
-import os
+import sys
 
 from src.utils.logger import get_logger
 from src.utils.component_factory import ComponentFactory
@@ -32,7 +32,8 @@ class Orchestrator:
     """
     def __init__(
         self,
-        config: dict
+        config: dict,
+        logger
     ) -> None:
         """
         Initializes the Orchestrator with configuration and various components.
@@ -45,7 +46,7 @@ class Orchestrator:
         self.config = config
         self.component_factory = ComponentFactory()
         self.experiment_tracker = ExperimentTracker(config["log_dir"])
-        self.logger = get_logger("NAS logger", os.path.join(config["log_dir"], "log.txt"))
+        self.logger = logger
 
     def get_component(
         self,
@@ -90,27 +91,28 @@ class Orchestrator:
             ValueError:
                 If the optimizer name is not recognized.
         """
-        # Select the optimizer, data loader and model using factory
+        self.logger.debug("Orchestrator:Select the optimizer, model and data loader.")
         optimizer = self.get_component(
             component_type="optimizer",
             component_config=experiment_config["optimizer"]
-        )
-        data_loader = self.get_component(
-            component_type="data_loader",
-            component_config=experiment_config["dataset"]
         )
         model = self.get_component(
             component_type="model",
             component_config=experiment_config["model"]
         )
+        data_loader = self.get_component(
+            component_type="data_loader",
+            component_config=experiment_config["dataset"]
+        )
 
         # Extract experiment details (avoid redundant variable assignments)
+        experiment_name = experiment_config["experiment_name"]
         optimizer_name = experiment_config["optimizer"]["name"]
         dataset_name = experiment_config["dataset"]["name"] + \
             " (" + experiment_config["dataset"]["dataset_name"] + ")"
         model_name = experiment_config["model"]["name"]
 
-        # Load and pre-process data
+        self.logger.debug("Orchestrator: Load and pre-process data")
         data_loader.data_pipeline()
         data = data_loader.get_data()
 
@@ -124,26 +126,27 @@ class Orchestrator:
             target_labels_for_test
         ) = data_loader.split_data(data)
 
-        # Optimize the model
+        self.logger.debug("Orchestrator: Optimize the model")
         best_params, best_score = optimizer.optimize(
-            model.model,
+            model,
             input_features_for_train,
             target_labels_for_train
         )
-        model.model.set_params(**best_params)
-        model.model.fit(
+        model.set_params(**best_params)
+        model.fit(
             input_features_for_train,
             target_labels_for_train
         )
 
-        # Evaluate the model
+        self.logger.debug("Orchestrator: Evaluate the model")
         metrics = model.evaluate(
             input_features_for_test,
             target_labels_for_test
         )
 
-        # Log the experiment
+        self.logger.debug("Orchestrator: Log the experiment")
         experiment_data = {
+            "experiment_name": experiment_name,
             "optimizer": optimizer_name,
             "dataset": dataset_name,
             "model": model_name,            
@@ -161,7 +164,23 @@ class Orchestrator:
         experiments to run, where each experiment
         specifies a dataset, model, and optimizer.
         """
+        oryginal_logger = self.logger
+
         for experiment in self.config["experiments"]:
+            try:
+                self.logger.info(f"Set logger configuration for experiment {experiment["experiment_name"]}...")
+                logger = get_logger(
+                    name=experiment["experiment_name"],
+                    log_file=self.config["log_dir"]+"/"+experiment["experiment_name"]+".log",
+                )
+            except Exception as e:
+                print("Orchestration failed due to problem with setting logger: %s", e)
+                sys.exit(1)
+
+            self.logger = logger
+            self.logger.info(f"Running experiment: {experiment["experiment_name"]}")
             self.run_experiment(
                 experiment
             )
+            self.logger.info(f"Experiment {experiment["experiment_name"]} completed.")
+            self.logger = oryginal_logger

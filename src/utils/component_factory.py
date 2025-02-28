@@ -9,9 +9,11 @@ classes, allowing for flexible and dynamic component creation.
 import logging
 
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
+from src.optimization.search_strategies.random_search import RandomSearchOptimizer
+
 from src.data.tabular_data import TabularDataLoader
-from src.data.time_series_data import TimeSeriesDataLoader
-from src.models.supervised_learning.random_forest_classifier import RandomForestClassifier
+
+from src.models.ensemble_learning.random_forest_classifier import RandomForestClassifier
 
 
 class ComponentFactory:
@@ -23,10 +25,10 @@ class ComponentFactory:
         self.components = {
             "optimizer": {
                 "grid_search": GridSearchOptimizer,
+                "random_search": RandomSearchOptimizer,
             },
             "data_loader": {
                 "tabular_data": TabularDataLoader,
-                "time_series_data": TimeSeriesDataLoader
             },
             "model": {
                 "random_forest_classifier": RandomForestClassifier,

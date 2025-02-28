@@ -183,4 +183,4 @@ class Orchestrator:
                 experiment
             )
             self.logger.info(f"Experiment {experiment["experiment_name"]} completed.")
-        self.logger = oryginal_logger
+            self.logger = oryginal_logger

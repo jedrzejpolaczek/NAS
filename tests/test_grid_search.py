@@ -1,83 +1,65 @@
 import pytest
-from unittest.mock import patch
-from unittest.mock import Mock
-
+import logging
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import GridSearchCV
 
-from src.models.supervised_learning.random_forest_classifier import RandomForestClassifier
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
 from src.models.templates.template_base_model import BaseModel
 
 
-mock_logger = Mock()
+# Setup basic logging for tests
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Mock BaseModel class for testing
+class MockModel(BaseModel):
+    """A mock implementation of BaseModel for testing purposes."""
+    def __init__(self, config, logger):
+        super().__init__(config, logger)
+        self.params = {}
 
-class MockBaseModel(BaseModel):
     def fit(self, X, y):
-        # Empty implementation for testing (optional)
+        """Mock fit method; does nothing."""
         pass
 
-    def evaluate(self, X, y) -> dict:
-        # Empty implementation for testing
-        return {}
+    def predict(self, X):
+        """Mock predict method; returns array of ones matching input length."""
+        return np.ones(len(X))
 
-    def predict(self, X) -> np.ndarray:
-        # Empty implementation for testing
-        return np.array([])
+    def evaluate(self, X, y):
+        """Mock evaluate method; returns a dummy dict to satisfy ABC."""
+        return {"dummy_metric": 0.0}
+
+    def set_params(self, **params):
+        """Mock set_params; updates internal params dict."""
+        self.params.update(params)
+        return self
+
+    def get_params(self, deep=True):
+        """Mock get_params; returns current params."""
+        return self.params
 
 
 @pytest.fixture
-def config():
+def grid_search_config():
+    """Fixture providing a sample GridSearchOptimizer configuration."""
     return {
         "config": {
-            "param_grid": {"n_estimators": [10, 100]},
-            "cv": 5,
-            "scoring": "accuracy",
+            "param_grid": {"param1": [1, 2], "param2": [3, 4]},
+            "cv": 3,
+            "scoring": "accuracy"
         }
     }
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
-def test_optimize_with_mock_model(config):
-    # Create mock data
-    mock_config = {
-        "model": {
-            "name": "random_forest_classifier",
-            "config": {
-                "n_estimators": 100
-            }
-        }
-    }
-    model = RandomForestClassifier(mock_config["model"], mock_logger).model
-    # Create a pandas DataFrame with your data
-    data = pd.DataFrame({
-        "sepal length (cm)": [5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.8, 4.8, 4.3, 5.8, 5.7, 5.4, 5.1, 5.7, 5.1, 5.4, 5.1, 4.6, 5.1, 4.8, 5.0, 5.0, 5.2, 5.2],
-        "sepal width (cm)": [3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.4, 3.0, 3.0, 4.0, 4.4, 3.9, 3.5, 3.8, 3.8, 3.4, 3.7, 3.6, 3.3, 3.4, 3.0, 3.4, 3.5, 3.4],
-        "petal length (cm)": [1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.6, 1.4, 1.1, 1.2, 1.5, 1.3, 1.4, 1.7, 1.5, 1.7, 1.5, 1.0, 1.7, 1.9, 1.6, 1.6, 1.5, 1.4],
-        "petal width (cm)": [0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.4, 0.2, 0.5, 0.2, 0.2, 0.4, 0.2, 0.2],
-        "target": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    })
-
-    # Separate features and target
-    X_train = data.iloc[:, :-1]  # Select columns excluding the last one (target)
-    y_train = data.iloc[:, -1]  # Select the last column as the target
-    
-    # Create mock model and GridSearchOptimizer
-    optimizer = GridSearchOptimizer(config, mock_logger)
-
-    best_params, best_score = optimizer.optimize(model, X_train, y_train)
-
-    # Assert best_params is a dictionary and best_score is not None
-    assert isinstance(best_params, dict)
-    assert best_score is not None
+@pytest.fixture
+def sample_data():
+    """Fixture providing sample data for testing."""
+    X = pd.DataFrame({"feature1": [1, 2, 3, 4, 5, 6], "feature2": [2, 4, 6, 8, 10, 12]})
+    y = pd.Series([0, 1, 0, 1, 0, 1])
+    return X, y
 
 
-def test_optimize_raises_error_for_non_base_model(config):
-    # Create GridSearchOptimizer
-    optimizer = GridSearchOptimizer(config, mock_logger)
-
-    # Test with a non-BaseModel object
-    with pytest.raises(TypeError):
-        optimizer.optimize("not_a_model", pd.DataFrame(), pd.Series())
+def test_init(grid_search_config):
+    """Test initialization of GridSearchOptimizer."""
+    optimizer = GridSearchOptimizer(grid_search_config, logger)

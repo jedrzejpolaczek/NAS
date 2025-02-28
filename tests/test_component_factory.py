@@ -1,15 +1,26 @@
 import pytest
 import logging
+
 from src.utils.component_factory import ComponentFactory
 from src.optimization.search_strategies.grid_search import GridSearchOptimizer
+from src.models.ensemble_learning.random_forest_classifier import RandomForestClassifier
 from src.data.tabular_data import TabularDataLoader
-from src.models.supervised_learning.random_forest_classifier import RandomForestClassifier
 
 
 def test_create_component_valid_optimizer():
     """Tests if create_component creates a GridSearchOptimizer for 'optimizer' type."""
     factory = ComponentFactory()
-    component_config = {"param1": "value1"}
+    component_config = {
+        "config": {
+            "param_grid": {
+                "n_estimators": [10, 50],
+                "max_depth": [3, 5],
+                "min_samples_split": [2, 4]
+            },
+            "cv": 2,
+            "scoring": "accuracy"
+        }
+    }
     logger = logging.getLogger("test_logger")
     component = factory.create_component(
         "optimizer", "grid_search", component_config, logger

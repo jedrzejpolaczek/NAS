@@ -1,5 +1,5 @@
 """
-Module for optimizing models using Grid Search with TensorFlow.
+Module for optimizing model's hyperparameters using Grid Search with TensorFlow.
 """
 import logging
 import pandas as pd
@@ -14,11 +14,12 @@ from src.optimization.search_strategies.templates.template_search import BaseSea
 
 class GridSearchOptimizer(BaseSearch, ABC):
     """
-    Class for optimizing models using Grid Search with TensorFlow.
-
+    Class for optimizing  model's hyperparameters using Grid Search with TensorFlow.
     Attributes:
-        config (dict): Configuration for the Grid Search, including param_grid, cv, and scoring.
-        logger (logging.Logger): Logger instance for tracking optimization process.
+        config (dict):
+            Configuration for the Grid Search, including param_grid, cv, and scoring.
+        logger (logging.Logger):
+            Logger instance for tracking optimization process.
     """
 
     def __init__(
@@ -30,8 +31,10 @@ class GridSearchOptimizer(BaseSearch, ABC):
         Initializes the GridSearchOptimizer with a configuration dictionary.
 
         Args:
-            config (dict): Configuration dictionary for the search.
-            logger (logging.Logger): Logger object shared in the project.
+            config (dict):
+                Configuration dictionary for the search.
+            logger (logging.Logger):
+                Logger object shared in the project.
         """
         super().__init__(config, logger)
         self.param_grid = self.config["config"]["param_grid"]
@@ -43,7 +46,8 @@ class GridSearchOptimizer(BaseSearch, ABC):
         Generate all possible combinations of parameters from the param_grid.
 
         Returns:
-            list: List of dictionaries, each representing a parameter combination.
+            list:
+                List of dictionaries, each representing a parameter combination.
         """
         keys = list(self.param_grid.keys())
         values = [self.param_grid[key] for key in keys]
@@ -62,13 +66,18 @@ class GridSearchOptimizer(BaseSearch, ABC):
         Perform k-fold cross-validation with the given parameters.
 
         Args:
-            model (BaseModel): The model to evaluate (may be wrapped with a .model attribute).
-            params (dict): Hyperparameters to set on the model.
-            X (pd.DataFrame or np.ndarray): Training input features.
-            y (pd.DataFrame, pd.Series, or np.ndarray): Target labels.
+            model (BaseModel):
+                The model to evaluate (may be wrapped with a .model attribute).
+            params (dict):
+                Hyperparameters to set on the model.
+            X (pd.DataFrame or np.ndarray):
+                Training input features.
+            y (pd.DataFrame, pd.Series, or np.ndarray):
+                Target labels.
 
         Returns:
-            float: Mean score across all folds.
+            float:
+                Mean score across all folds.
         """        
         # Convert to TensorFlow tensors
         X_tf = tf.convert_to_tensor(X.values if isinstance(X, pd.DataFrame) else X, dtype=tf.float32)
@@ -119,15 +128,19 @@ class GridSearchOptimizer(BaseSearch, ABC):
         target_labels_for_train: pd.DataFrame
     ) -> Tuple[Dict[str, Any], float]:
         """
-        Perform Grid Search optimization on the model using TensorFlow.
+        Perform Grid Search hyperparameter optimization on the model using TensorFlow.
 
         Args:
-            model (BaseModel): The model to be optimized (may be wrapped).
-            input_features_for_train (pd.DataFrame or np.ndarray): Training input features.
-            target_labels_for_train (pd.DataFrame or np.ndarray): Target labels.
+            model (BaseModel):
+                The model to be optimized (may be wrapped).
+            input_features_for_train (pd.DataFrame or np.ndarray):
+                Training input features.
+            target_labels_for_train (pd.DataFrame or np.ndarray):
+                Target labels.
 
         Returns:
-            tuple: The best parameters and the best score from the Grid Search.
+            tuple:
+                The best parameters and the best score from the Grid Search.
         """
         self.logger.info("Starting Grid Search optimization...")
         

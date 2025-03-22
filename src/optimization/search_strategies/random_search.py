@@ -1,5 +1,5 @@
 """
-Module for optimizing models using Random Search with TensorFlow.
+Module for optimizing model's hyperparameters using Random Search with TensorFlow.
 """
 import logging
 import pandas as pd
@@ -14,11 +14,13 @@ from src.optimization.search_strategies.templates.template_search import BaseSea
 
 class RandomSearchOptimizer(BaseSearch, ABC):
     """
-    Class for optimizing models using Random Search with TensorFlow.
+    Class for optimizing model's hyperparameters using Random Search with TensorFlow.
 
     Attributes:
-        config (dict): Configuration for the Random Search, including param_distributions, n_iter, cv, and scoring.
-        logger (logging.Logger): Logger instance for tracking optimization process.
+        config (dict):
+            Configuration for the Random Search, including param_distributions, n_iter, cv, and scoring.
+        logger (logging.Logger):
+            Logger instance for tracking optimization process.
     """
 
     def __init__(
@@ -30,12 +32,10 @@ class RandomSearchOptimizer(BaseSearch, ABC):
         Initializes the RandomSearchOptimizer with a configuration dictionary.
 
         Args:
-            config (dict): Configuration dictionary for the search, containing:
-                - param_distributions: dict of hyperparameters with their possible values (lists or ranges).
-                - n_iter: int, number of random combinations to try.
-                - cv: int, number of cross-validation folds.
-                - scoring: str, metric to optimize (e.g., 'accuracy').
-            logger (logging.Logger): Logger object shared in the project.
+            config (dict):
+                Configuration dictionary for the search.
+            logger (logging.Logger):
+                Logger object shared in the project.
         """
         super().__init__(config, logger)
         self.param_distributions = self.config["config"]["param_distributions"]
@@ -48,7 +48,8 @@ class RandomSearchOptimizer(BaseSearch, ABC):
         Generate a fixed number of random parameter combinations from the param_distributions.
 
         Returns:
-            list: List of dictionaries, each representing a random parameter combination.
+            list:
+                List of dictionaries, each representing a random parameter combination.
         """
         combinations = []
         keys = list(self.param_distributions.keys())
@@ -71,10 +72,14 @@ class RandomSearchOptimizer(BaseSearch, ABC):
         Perform k-fold cross-validation with the given parameters.
 
         Args:
-            model (BaseModel): The model to evaluate.
-            params (dict): Hyperparameters to set on the model.
-            X (pd.DataFrame or np.ndarray): Training input features.
-            y (pd.DataFrame, pd.Series, or np.ndarray): Target labels.
+            model (BaseModel):
+                The model to evaluate.
+            params (dict):
+                Hyperparameters to set on the model.
+            X (pd.DataFrame or np.ndarray):
+                Training input features.
+            y (pd.DataFrame, pd.Series, or np.ndarray):
+                Target labels.
 
         Returns:
             float: Mean score across all folds.
@@ -128,15 +133,19 @@ class RandomSearchOptimizer(BaseSearch, ABC):
         target_labels_for_train: pd.DataFrame
     ) -> Tuple[Dict[str, Any], float]:
         """
-        Perform Random Search optimization on the model using TensorFlow.
+        Perform Random Search hyperparameter optimization on the model using TensorFlow.
 
         Args:
-            model (BaseModel): The model to be optimized.
-            input_features_for_train (pd.DataFrame or np.ndarray): Training input features.
-            target_labels_for_train (pd.DataFrame or np.ndarray): Target labels.
+            model (BaseModel):
+                The model to be optimized.
+            input_features_for_train (pd.DataFrame or np.ndarray):
+                Training input features.
+            target_labels_for_train (pd.DataFrame or np.ndarray):
+                Target labels.
 
         Returns:
-            tuple: The best parameters and the best score from the Random Search.
+            tuple:
+                The best parameters and the best score from the Random Search.
         """
         self.logger.info("Starting Random Search optimization...")
         

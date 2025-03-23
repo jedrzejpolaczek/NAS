@@ -1,6 +1,6 @@
 """
 Module for optimizing model's hyperparameters using Grid Search with TensorFlow.
-We should have in mind that "grid" in these search strategies refers to the exhaustive search
+We should have in mind that "grid" in these search strategie refers to the exhaustive search
 over all possible combinations of hyperparameters.
 """
 import logging
